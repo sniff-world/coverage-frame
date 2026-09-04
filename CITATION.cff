@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: >-
+  If you use the CoverageFrame schema family, please cite it as below. A
+  Zenodo DOI is minted per release; prefer the versioned DOI of the release
+  you used.
+title: "CoverageFrame: reasoned absence over a bounded question space"
+type: software
+authors:
+  - family-names: Gehring
+    given-names: Matt
+    email: matt@sniff.world
+license:
+  - CC0-1.0
+  - MIT
+# CC0-1.0 covers the schemas and the examples; MIT covers build-staging.mjs and the
+# CI workflow. See LICENSE and LICENSE-CODE.
+version: 1.0.0
+repository-code: https://github.com/sniff-world/coverage-frame
+url: https://sniff.world/schema/coverage-frame
+keywords:
+  - linkml
+  - biolink
+  - knowledge-graph
+  - reasoned-absence
+  - knowledge-coverage
+  - canine-genetics
+# doi: added automatically once the Zenodo-GitHub integration mints the first
+# release DOI; update this line with the concept DOI at that point.

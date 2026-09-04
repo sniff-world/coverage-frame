@@ -1,0 +1,84 @@
+# SPDX-License-Identifier: MIT
+# LinkML validation: the same reference-toolchain checks these schemas pass
+# in the source substrate behind sniff.world on every change: linkml-lint
+# plus gen-json-schema, where generability is treated as deep validity.
+
+name: LinkML schema validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  linkml:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install LinkML
+        run: pip install 'linkml>=1.9'
+
+      - name: linkml-lint every schema
+        run: |
+          set -e
+          for f in schema/*.yaml; do
+            echo "== linkml-lint $f"
+            linkml-lint -c linkmllint.yaml "$f"
+          done
+
+      - name: gen-json-schema every schema (generability = deep validity)
+        run: |
+          set -e
+          mkdir -p /tmp/jsonschema
+          for f in schema/*.yaml; do
+            out="/tmp/jsonschema/$(basename "$f" .yaml).json"
+            echo "== gen-json-schema $f -> $out"
+            gen-json-schema "$f" > "$out"
+            python3 -c "import json,sys; json.load(open('$out'))"
+          done
+
+      # linkml-lint and gen-json-schema prove the SCHEMAS are well formed. Neither
+      # opens examples/, so an artifact carrying a key no schema declares would
+      # ship with CI green. That is not hypothetical: hours before this repo was
+      # first published, the mouse demo was found with positive_controls on the
+      # frame instead of the SearchProtocol, using symbol/expected/observed/result
+      # where PositiveControl declares subject/expected_status/observed_status/basis.
+      #
+      # A schema whose own examples do not conform to it is worse than no examples.
+      - name: Every example key is declared by the schema family
+        run: python3 check-examples.py
+
+      # check-examples proves every key is DECLARED. It passed a file that was
+      # factually wrong, because shape-valid launders content-invalid: the mouse
+      # demo typed OR2J3 as `unreachable` while Alliance returns a stringent
+      # mouse ortholog for it. Every key was declared, every count reconciled,
+      # and the claim was false.
+      #
+      # Positive controls prove the instrument finds what exists. This proves it
+      # does not INVENT ABSENCE, which for an instrument whose product is typed
+      # absence is the more important direction.
+      - name: Every object validates against its own class
+        run: python3 check-conformance.py
+
+      - name: The pipeline does not invent absence
+        run: python3 check-cause-controls.py
+
+      # "A no needs a procedure." Every protocol's pipeline URI resolves to a
+      # published script, and the canine builder's bytes hash to the pinned value.
+      - name: The published emitter is the pinned emitter
+        run: python3 check-pipeline.py
+
+      - name: Upload generated JSON Schemas
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-json-schemas
+          path: /tmp/jsonschema/
+          retention-days: 30

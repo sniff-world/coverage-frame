@@ -1,0 +1,16 @@
+{
+  "note": "sha256 of each published emitter, LF-normalized. The canine frame protocol is pinned in the source substrate to the same hash; check-pipeline.py verifies the published bytes are the pinned bytes.",
+  "pinned": {
+    "sniff:protocol/human-disease-gene-canine-model": {
+      "protocol_version": "11",
+      "script": "build-coverage-frames.mjs",
+      "script_sha256": "e8dede2f4c23ff50c49b55b1f779dc22ea42ebc0df8dc8ea9c4851a18b0e1171"
+    }
+  },
+  "published": {
+    "build-coverage-frames.mjs": "e8dede2f4c23ff50c49b55b1f779dc22ea42ebc0df8dc8ea9c4851a18b0e1171",
+    "build-coverage-composition.mjs": "a45c7fc0009de90abada24687f5722a078e5c5ba0e1b81e026a2f36c5a927fe7",
+    "build-coverage-frame-delta.mjs": "900ed528699d9339188ef4c953de3120d1386459fb7a7b4e150c87440dec40e0",
+    "build-mouse-coverage-frame.mjs": "2eac3171d00bdbc9f0b506f417add7231ceb0d99147ce630d0034c3a9998e656"
+  }
+}

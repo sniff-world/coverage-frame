@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "doc": "Sniff FrameDelta: typed change between coverage-frame releases. Generated, never hand-maintained. Conforms to schema/sniff-coverage-frame-delta.yaml, and is verified against it on every build.",
+    "schema": "https://sniff.world/schema/coverage-frame-delta",
+    "generated": "2026-09-04"
+  },
+  "delta": {
+    "id": "sniff:delta/2026-09-03..2026-09-04",
+    "previous_frame": "sniff:frame/human-disease-gene-canine-model@sniff:release/2026-09-03",
+    "current_frame": "sniff:frame/human-disease-gene-canine-model@sniff:release/2026-09-04",
+    "kind": "frame_moved",
+    "transitions": [],
+    "entered": [],
+    "left": []
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "_meta": {
+    "doc": "Demonstration CoverageFrame: GenCC-neighborhood human disease genes x mouse models via Alliance/MGI. SAMPLED seed, not the full universe. Not a consumer claim. The assay is reciprocal one-to-one orthology; causes are read from Alliance orthology flags.",
+    "schema": "https://sniff.world/schema/coverage-frame",
+    "schema_version": "0.2.8",
+    "schema_provenance": "https://sniff.world/schema/coverage-frame-provenance",
+    "schema_provenance_version": "0.3.14",
+    "generated": "2026-09-04",
+    "completeness": "sampled",
+    "assay": "mouse",
+    "source": "https://www.alliancegenome.org/api/gene/{id}/orthologs?stringencyFilter=stringent (forward and reverse)"
+  },
+  "frame": {
+    "id": "sniff:frame/human-disease-gene-mouse-model@demo-seed",
+    "question": "Does this human disease gene have a reciprocal one-to-one mouse ortholog that carries Alliance disease annotations?",
+    "subject_population": "Sampled seed of 9 human disease genes in the GenCC neighborhood",
+    "object_population": "Stringent mouse orthologs returned by the Alliance orthology API for each seed gene",
+    "subject_population_ref": "sniff:population/alliance-mouse-demo-seed@1",
+    "object_population_ref": "sniff:population/alliance-mouse-orthologs-of-seed@2",
+    "predicate": "biolink:model_of",
+    "expected_cardinality": 9,
+    "answered_count": 7,
+    "dark_count": 2,
+    "dark_by_cause": {
+      "unreachable": 1,
+      "method_limited": 1,
+      "unstudied": 0
+    },
+    "sources_checked": [
+      "infores:agrkb"
+    ],
+    "as_of": "2026-09-04",
+    "search_protocol": "sniff:protocol/human-disease-gene-mouse-model@demo-2",
+    "conforms_to": "sniff:ProvenancedCoverageFrame"
+  },
+  "populations": [
+    {
+      "id": "sniff:population/alliance-mouse-demo-seed@1",
+      "source": "infores:agrkb",
+      "source_version": "2026-09-04",
+      "selection": "Sampled seed of human disease genes in the GenCC neighbourhood. NOT the full universe; the demo exists to show the shape, never to publish a census.",
+      "count": 9
+    },
+    {
+      "id": "sniff:population/alliance-mouse-orthologs-of-seed@2",
+      "source": "infores:agrkb",
+      "source_version": "2026-09-04",
+      "selection": "Mouse genes returned by the Alliance orthology API for each seed gene under stringent filtering, with each hit's reciprocal-best human partners read back from the mouse side. Not the set of all mouse genes carrying disease annotations; this demo never enumerated that set.",
+      "count": 9
+    }
+  ],
+  "protocols": [
+    {
+      "id": "sniff:protocol/human-disease-gene-mouse-model@demo-2",
+      "protocol_version": "demo-2",
+      "pipeline": "https://github.com/sniff-world/coverage-frame/blob/main/pipeline/build-mouse-coverage-frame.mjs",
+      "completeness": "sampled",
+      "match_criteria": "A cell is answered when the human gene has a stringent Alliance mouse ortholog that is reciprocal-best (isBestScore and isBestScoreReverse both true) AND that mouse gene carries Alliance disease annotations. Instrument-side causes first: no stringent mouse hit is unreachable; a hit whose reciprocal-best human partner is a single different gene is unreachable (the mouse gene belongs to a human paralog, so no counterpart exists for this gene); a hit whose reciprocal bests are several or none is method_limited (one-to-one is undefined in that family); a reciprocal one-to-one ortholog with no disease annotation is unstudied. This sampled protocol can assign three of the six causes in DarkCauseEnum; below_bar, no_disease_anchor and absent are not assignable without the full Alliance disease dump and are listed in neither the funnel nor the tallies.",
+      "cause_precedence": [
+        "unreachable",
+        "method_limited",
+        "unstudied"
+      ],
+      "dial_references": [
+        "sniff:dial/reciprocal-best-orthology@1"
+      ],
+      "positive_controls": [
+        {
+          "subject": "HGNC:11998",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "TP53: MGI disease-model annotations exist for the mouse ortholog (Alliance geneAnnotationsMap.hasDiseaseAnnotations, read 2026-09-04 UTC)",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:agrkb",
+          "receipt_as_of": "2026-09-04",
+          "outcome": "held"
+        },
+        {
+          "subject": "HGNC:11179",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "SOD1: MGI disease-model annotations exist for the mouse ortholog (Alliance geneAnnotationsMap.hasDiseaseAnnotations, read 2026-09-04 UTC)",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:agrkb",
+          "receipt_as_of": "2026-09-04",
+          "outcome": "held"
+        },
+        {
+          "subject": "HGNC:3546",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "F8: MGI disease-model annotations exist for the mouse ortholog (Alliance geneAnnotationsMap.hasDiseaseAnnotations, read 2026-09-04 UTC)",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:agrkb",
+          "receipt_as_of": "2026-09-04",
+          "outcome": "held"
+        }
+      ],
+      "darkness_controls": [
+        {
+          "subject": "HGNC:15965",
+          "expected_cause": "unreachable",
+          "observed_cause": "unreachable",
+          "observed_status": "dark",
+          "basis": "DAZ3: the DAZ cluster is a primate Y-linked transposition and amplification of autosomal DAZL (Saxena et al. 1996, PMID:8896558); the mouse genome carries Dazl and Boll and no DAZ, so no counterpart exists for the assay to observe",
+          "basis_kind": "independent_literature",
+          "receipt_source": "PMID:8896558",
+          "outcome": "held"
+        },
+        {
+          "subject": "HGNC:8261",
+          "expected_cause": "method_limited",
+          "observed_cause": "method_limited",
+          "observed_status": "dark",
+          "basis": "OR2J3: mouse olfactory receptors are a massively expanded family with many-to-many orthology to human (Zhang and Firestein 2002, PMID:11802173); a one-to-one assay cannot resolve the pair, and Alliance flags Or2j3 as reciprocal-best to OR2J2 and OR2J1, not OR2J3",
+          "basis_kind": "independent_literature",
+          "receipt_source": "PMID:11802173",
+          "outcome": "held"
+        }
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "subject": "HGNC:11998",
+      "symbol": "TP53",
+      "object": "MGI:98834",
+      "status": "answered",
+      "dark_cause": null
+    },
+    {
+      "subject": "HGNC:11179",
+      "symbol": "SOD1",
+      "object": "MGI:98351",
+      "status": "answered",
+      "dark_cause": null
+    },
+    {
+      "subject": "HGNC:3546",
+      "symbol": "F8",
+      "object": "MGI:88383",
+      "status": "answered",
+      "dark_cause": null
+    },
+    {
+      "subject": "HGNC:12726",
+      "symbol": "VWF",
+      "object": "MGI:98941",
+      "status": "answered",
+      "dark_cause": null
+    },
+    {
+      "subject": "HGNC:3551",
+      "symbol": "F9",
+      "object": "MGI:88384",
+      "status": "answered",
+      "dark_cause": null
+    },
+    {
+      "subject": "HGNC:29021",
+      "symbol": "CEP290",
+      "object": "MGI:2384917",
+      "status": "answered",
+      "dark_cause": null
+    },
+    {
+      "subject": "HGNC:8979",
+      "symbol": "PIK3R1",
+      "object": "MGI:97583",
+      "status": "answered",
+      "dark_cause": null
+    },
+    {
+      "subject": "HGNC:15965",
+      "symbol": "DAZ3",
+      "object": "MGI:1342328",
+      "status": "dark",
+      "dark_cause": "unreachable"
+    },
+    {
+      "subject": "HGNC:8261",
+      "symbol": "OR2J3",
+      "object": "MGI:2177520",
+      "status": "dark",
+      "dark_cause": "method_limited"
+    }
+  ]
+}

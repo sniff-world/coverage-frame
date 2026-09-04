@@ -1,0 +1,26 @@
+{
+  "title": "CoverageFrame: reasoned absence over a bounded question space",
+  "upload_type": "software",
+  "description": "A small LinkML schema family for typed reasoned absence over a declared, bounded question space: CoverageFrame core (CoverageFrame, FrameCell, CellStatusEnum, DarkCauseEnum), a provenance module (SearchProtocol, PopulationDefinition, positive controls), and a delta module (FrameDelta, CellTransition). Runs in production at sniff.world; schema IDs resolve under https://sniff.world/schema/. Licensing: the schemas and examples are CC0-1.0; the generator script and CI workflow are MIT (see LICENSE and LICENSE-CODE in the repository).",
+  "creators": [
+    {
+      "name": "Gehring, Matt"
+    }
+  ],
+  "license": "CC0-1.0",
+  "keywords": [
+    "linkml",
+    "biolink",
+    "knowledge-graph",
+    "reasoned-absence",
+    "knowledge-coverage",
+    "canine-genetics"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://sniff.world/schema/coverage-frame"
+    }
+  ],
+  "version": "1.0.0"
+}

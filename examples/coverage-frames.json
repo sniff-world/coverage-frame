@@ -1,0 +1,333 @@
+{
+  "_meta": {
+    "doc": "Sniff CoverageFrames: reasoned absence as machine-readable frames. Generated, never hand-maintained. Conforms to schema/sniff-coverage-frame.yaml plus the provenance module, and is verified against them on every build.",
+    "schema": "https://sniff.world/schema/coverage-frame",
+    "schema_provenance": "https://sniff.world/schema/coverage-frame-provenance",
+    "generated": "2026-08-13",
+    "release_id": "sniff:release/2026-09-04",
+    "cell_index": "sniff:artifact/coverage-cell-index",
+    "cell_index_sha256": "dd107378f6969b02a55103552f3674277b3d190024a5d22ee9d42055bacedeeb"
+  },
+  "frames": [
+    {
+      "id": "sniff:frame/human-disease-gene-canine-model",
+      "conforms_to": "sniff:ProvenancedCoverageFrame",
+      "question": "Does a canine model foundation exist for this human disease gene under ClinVar 3-star review plus an assertable one-to-one ortholog?",
+      "subject_population": "Human disease genes touched by the dog-to-human bridge",
+      "object_population": "Canine orthologs",
+      "predicate": "biolink:model_of",
+      "expected_cardinality": 16754,
+      "answered_count": 124,
+      "dark_count": 16630,
+      "dark_by_cause": {
+        "no_disease_anchor": 11161,
+        "below_bar": 5362,
+        "unreachable": 107
+      },
+      "cell_source": "sniff:artifact/frontier-map",
+      "sources_checked": [
+        "infores:clinvar",
+        "infores:ensembl-gene"
+      ],
+      "as_of": "2026-08-13",
+      "release_id": "sniff:release/2026-09-04",
+      "search_protocol": "sniff:protocol/human-disease-gene-canine-model@11",
+      "subject_population_ref": "sniff:population/bridge-touched-human-genes@2",
+      "object_population_ref": "sniff:population/canine-one2one-ortholog-space@2",
+      "scope": {
+        "measures": "This frame measures ClinVar 3-star review reach into canine models via dog orthology, not the canine literature.",
+        "sources_queried": [
+          "infores:clinvar",
+          "infores:ensembl-gene"
+        ],
+        "sources_not_queried": [
+          {
+            "source": "infores:omia",
+            "reason": "OMIA is the authority on documented canine Mendelian disease. This frame's answered predicate is ClinVar 3-star pathogenic or likely pathogenic plus an assertable dog ortholog, so OMIA was not queried.",
+            "close_path": "Publish a parallel OMIA-scoped frame over the same subject axis (sniff:frame/human-disease-gene-canine-model/omia). Do not join OMIA into this frame's answered predicate. Narrowness is the measurement."
+          }
+        ]
+      }
+    },
+    {
+      "id": "sniff:frame/human-disease-gene-canine-model/omia",
+      "conforms_to": "sniff:ProvenancedCoverageFrame",
+      "question": "Does OMIA document a canine Mendelian disease-gene for this human disease gene?",
+      "subject_population": "Human disease genes touched by the dog-to-human bridge",
+      "object_population": "Canine orthologs",
+      "predicate": "biolink:model_of",
+      "expected_cardinality": 16754,
+      "answered_count": 183,
+      "dark_count": 16571,
+      "dark_by_cause": {
+        "no_disease_anchor": 16571
+      },
+      "cell_source": "sniff:artifact/coverage-stack-index",
+      "sources_checked": [
+        "infores:omia"
+      ],
+      "as_of": "2026-08-27",
+      "release_id": "sniff:release/2026-09-04",
+      "search_protocol": "sniff:protocol/human-disease-gene-canine-model-omia@1",
+      "subject_population_ref": "sniff:population/bridge-touched-human-genes@2",
+      "object_population_ref": "sniff:population/canine-one2one-ortholog-space@2",
+      "scope": {
+        "measures": "This frame measures OMIA's documented canine Mendelian disease-gene reach into the same human-disease-gene universe. It is not ClinVar, and it is not a combined census.",
+        "sources_queried": [
+          "infores:omia"
+        ],
+        "sources_not_queried": [
+          {
+            "source": "infores:clinvar",
+            "reason": "This frame measures OMIA. ClinVar 3-star reach is a different frame over the same axis.",
+            "close_path": "Stack with sniff:frame/human-disease-gene-canine-model. Do not join ClinVar into this answered predicate."
+          }
+        ]
+      }
+    },
+    {
+      "id": "sniff:frame/human-disease-gene-canine-model/intersection",
+      "conforms_to": "sniff:ProvenancedCoverageFrame",
+      "question": "Does any scoped source document a canine model foundation for this human disease gene?",
+      "subject_population": "Human disease genes touched by the dog-to-human bridge",
+      "object_population": "Canine orthologs",
+      "predicate": "biolink:model_of",
+      "expected_cardinality": 16754,
+      "answered_count": 292,
+      "dark_count": 16462,
+      "dark_by_cause": {},
+      "cell_source": "sniff:artifact/coverage-stack-index",
+      "sources_checked": [
+        "infores:clinvar",
+        "infores:ensembl-gene",
+        "infores:omia"
+      ],
+      "as_of": "2026-08-13",
+      "release_id": "sniff:release/2026-09-04",
+      "search_protocol": "sniff:protocol/human-disease-gene-canine-model-intersection@1",
+      "subject_population_ref": "sniff:population/bridge-touched-human-genes@2",
+      "object_population_ref": "sniff:population/canine-one2one-ortholog-space@2",
+      "constituents": [
+        "sniff:frame/human-disease-gene-canine-model",
+        "sniff:frame/human-disease-gene-canine-model/omia"
+      ],
+      "scope": {
+        "measures": "This frame stacks scoped source-frames over one subject axis. A cell is answered when any constituent is lit, and dark when every constituent of this stack is dark. dark_in_all_frames is scoped to the named constituents, not to the world. Causes stay on the constituents.",
+        "sources_queried": [
+          "infores:clinvar",
+          "infores:ensembl-gene",
+          "infores:omia"
+        ],
+        "sources_not_queried": []
+      }
+    }
+  ],
+  "protocols": [
+    {
+      "id": "sniff:protocol/human-disease-gene-canine-model@11",
+      "protocol_version": "11",
+      "pipeline": "https://github.com/sniff-world/coverage-frame/blob/main/pipeline/build-coverage-frames.mjs",
+      "match_criteria": "A cell is answered when the human gene has a 3-star ClinVar P/LP anchor AND an assertable dog ortholog (Compara one2one, or the OrthoDB/OMA moderate ladder for reachability). Dark causes per the precedence funnel; below_bar is denominated by the named dial.",
+      "completeness": "exhaustive",
+      "cause_precedence": [
+        "unreachable",
+        "method_limited",
+        "no_disease_anchor",
+        "unstudied",
+        "below_bar",
+        "absent"
+      ],
+      "dial_references": [
+        "sniff:dial/clinvar-review-floor@1"
+      ],
+      "positive_controls": [
+        {
+          "subject": "ENSEMBL:ENSG00000141510",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "TP53: OMIA:000620-9615 (histiocytic sarcoma), canine, listed by OMIA among the genes associated with this phene, independent of this pipeline. Weaker anchor than F8 and VWF: OMIA records this phene as multifactorial with no key variant known, and removed its candidate variant from the table of likely causal variants. Retained as a control on the recorded association, not on a causal variant.",
+          "basis_kind": "independent_source",
+          "receipt_source": "infores:omia",
+          "outcome": "held"
+        },
+        {
+          "subject": "ENSEMBL:ENSG00000185010",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "F8: OMIA:000437-9615 (hemophilia A), canine, documented independent of this pipeline",
+          "basis_kind": "independent_source",
+          "receipt_source": "infores:omia",
+          "outcome": "held"
+        },
+        {
+          "subject": "ENSEMBL:ENSG00000110799",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "VWF: OMIA:001057-9615 (von Willebrand disease), canine, documented independent of this pipeline",
+          "basis_kind": "independent_source",
+          "receipt_source": "infores:omia",
+          "outcome": "held"
+        }
+      ],
+      "darkness_controls": [
+        {
+          "subject": "ENSEMBL:ENSG00000187191",
+          "expected_cause": "unreachable",
+          "observed_cause": "unreachable",
+          "observed_status": "dark",
+          "basis": "DAZ3: the DAZ cluster arose by transposition and amplification of autosomal DAZL onto the primate Y chromosome (Saxena et al. 1996, PMID:8896558); no non-primate genome, the dog included, carries a DAZ gene, so no ortholog exists for the assay to observe",
+          "basis_kind": "independent_literature",
+          "receipt_source": "PMID:8896558",
+          "outcome": "held"
+        },
+        {
+          "subject": "ENSEMBL:ENSG00000112592",
+          "expected_cause": "below_bar",
+          "observed_cause": "below_bar",
+          "observed_status": "dark",
+          "basis": "TBP: ClinVar holds 28 germline pathogenic or likely pathogenic records for TBP (spinocerebellar ataxia 17) and none reviewed by an expert panel (E-utilities esearch, read 2026-09-04 UTC), so a human anchor exists and sits under the three-star bar",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:clinvar",
+          "outcome": "held",
+          "receipt_as_of": "2026-09-04"
+        },
+        {
+          "subject": "ENSEMBL:ENSG00000121410",
+          "expected_cause": "no_disease_anchor",
+          "observed_cause": "no_disease_anchor",
+          "observed_status": "dark",
+          "basis": "A1BG: ClinVar holds no germline pathogenic or likely pathogenic record for A1BG (E-utilities esearch, read 2026-09-04 UTC) while a one-to-one dog ortholog exists, so the question cannot be asked of this gene from a human anchor",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:clinvar",
+          "outcome": "held",
+          "receipt_as_of": "2026-09-04"
+        }
+      ],
+      "executed_at": "2026-08-13"
+    },
+    {
+      "id": "sniff:protocol/human-disease-gene-canine-model-omia@1",
+      "protocol_version": "1",
+      "pipeline": "https://github.com/sniff-world/coverage-frame/blob/main/pipeline/build-coverage-composition.mjs",
+      "match_criteria": "A cell is answered when a recorded OMIA canine (NCBI taxon 9615) disease-gene identifier exists for this human gene symbol, mapped onto the shared subject axis. Dark cells are no_disease_anchor under OMIA: no such record. This frame does not assign below_bar.",
+      "completeness": "exhaustive",
+      "cause_precedence": [
+        "unreachable",
+        "method_limited",
+        "no_disease_anchor",
+        "unstudied",
+        "below_bar",
+        "absent"
+      ],
+      "dial_references": [],
+      "positive_controls": [
+        {
+          "subject": "ENSEMBL:ENSG00000142168",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "SOD1: OMIA:000263-9615 degenerative myelopathy, canine, documented independent of this pipeline",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:omia",
+          "receipt_as_of": "2026-08-27",
+          "outcome": "held"
+        },
+        {
+          "subject": "ENSEMBL:ENSG00000185010",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "F8: OMIA:000437-9615 haemophilia A, canine, documented independent of this pipeline",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:omia",
+          "receipt_as_of": "2026-08-27",
+          "outcome": "held"
+        },
+        {
+          "subject": "ENSEMBL:ENSG00000110799",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "VWF: OMIA:001057-9615 von Willebrand disease, canine, documented independent of this pipeline",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:omia",
+          "receipt_as_of": "2026-08-27",
+          "outcome": "held"
+        }
+      ],
+      "darkness_controls": [
+        {
+          "subject": "ENSEMBL:ENSG00000121410",
+          "expected_cause": "no_disease_anchor",
+          "observed_cause": "no_disease_anchor",
+          "observed_status": "dark",
+          "basis": "A1BG: no OMIA canine phene lists this gene (OMIA phene table, read directly 2026-09-04) while a one-to-one dog ortholog exists",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:omia",
+          "receipt_as_of": "2026-08-27",
+          "outcome": "held"
+        }
+      ],
+      "executed_at": "2026-08-27"
+    },
+    {
+      "id": "sniff:protocol/human-disease-gene-canine-model-intersection@1",
+      "protocol_version": "1",
+      "pipeline": "https://github.com/sniff-world/coverage-frame/blob/main/pipeline/build-coverage-composition.mjs",
+      "match_criteria": "A cell is answered when ANY constituent frame is answered (lit in at least one scoped source). A cell is dark when EVERY constituent is dark. Causes are not assigned here; they remain on the constituents. Constituents must share one subject axis.",
+      "completeness": "exhaustive",
+      "cause_precedence": [
+        "unreachable",
+        "method_limited",
+        "no_disease_anchor",
+        "unstudied",
+        "below_bar",
+        "absent"
+      ],
+      "dial_references": [],
+      "positive_controls": [
+        {
+          "subject": "ENSEMBL:ENSG00000142168",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "SOD1: OMIA:000263-9615 degenerative myelopathy, canine, documented independent of this pipeline Intersection control: lit in at least one constituent.",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:omia",
+          "outcome": "held"
+        },
+        {
+          "subject": "ENSEMBL:ENSG00000185010",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "F8: OMIA:000437-9615 haemophilia A, canine, documented independent of this pipeline Intersection control: lit in at least one constituent.",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:omia",
+          "outcome": "held"
+        },
+        {
+          "subject": "ENSEMBL:ENSG00000110799",
+          "expected_status": "answered",
+          "observed_status": "answered",
+          "basis": "VWF: OMIA:001057-9615 von Willebrand disease, canine, documented independent of this pipeline Intersection control: lit in at least one constituent.",
+          "basis_kind": "same_source_hand_verified",
+          "receipt_source": "infores:omia",
+          "outcome": "held"
+        }
+      ],
+      "executed_at": "2026-08-13"
+    }
+  ],
+  "populations": [
+    {
+      "id": "sniff:population/bridge-touched-human-genes@2",
+      "source": "infores:clinvar",
+      "source_version": "sniff:release/2026-08-13",
+      "selection": "Every human gene touched by the dog-to-human bridge: ClinVar P/LP disease-gene atoms (3-star anchors kept, below-expert-bar signal retained as below_bar) joined to the dog orthology ladder; the human-gene selection funnel total (the human-gene selection funnel total).",
+      "count": 16754
+    },
+    {
+      "id": "sniff:population/canine-one2one-ortholog-space@2",
+      "source": "infores:ensembl-gene",
+      "source_version": "Ensembl Compara release 116",
+      "selection": "Dog genes with ortholog_status=one2one in the Ensembl Compara one-to-one set; the moderate OrthoDB/OMA ladder used for reachability is stated in match_criteria, not double-counted here.",
+      "count": 17239
+    }
+  ]
+}

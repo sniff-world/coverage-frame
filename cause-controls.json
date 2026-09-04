@@ -1,0 +1,78 @@
+{
+  "_meta": {
+    "doc": "Cause-level negative controls. Genes with a VERIFIED stringent mouse ortholog, on which the pipeline may never emit dark_cause: unreachable.",
+    "why": "Positive controls prove the instrument finds what exists. These prove it does not INVENT ABSENCE, which for an instrument whose product is typed absence is the more important direction. Seeded 2026-08-25 by the failure that created the need: the mouse demo typed OR2J3 as unreachable ('no ortholog or entity exists for the assay to observe') while Alliance returns a stringent mouse ortholog for it. The cell failed the match criteria on the disease-annotation half, which is unstudied, not unreachable.",
+    "frozen": "2026-08-25",
+    "source": "Alliance of Genome Resources, https://www.alliancegenome.org/api/gene/{id}/orthologs",
+    "how_to_extend": "Add a gene only with a query receipt: the MGI id, the stringencyFilter value, and the date the response was read. A control asserted from memory is not a control.",
+    "assay_scope": "A control is valid ONLY inside the assay it was verified in. These receipts are MOUSE orthology facts and forbid `unreachable` only on a human-to-mouse frame. They say nothing about canine orthology, so they may never be applied to the canine-model frames. Caught 2026-08-25 on the gate’s first run: matching on bare symbol flagged DAZ3 in the canine delta, where the cell reads \"ambiguous dog ortholog only - abstained\". Asserting a mouse fact against a dog question is the same error the controls exist to catch.",
+    "uncovered": "No canine-assay controls exist yet. Building them needs verified dog ortholog receipts from the OrthoDB/NCBI ladder, and a control asserted without one is not a control. The canine frames are therefore UNGUARDED in this direction; the gate says so on every run rather than implying coverage it does not have."
+  },
+  "controls": [
+    {
+      "subject": "HGNC:11998",
+      "symbol": "TP53",
+      "forbidden_cause": "unreachable",
+      "because": "a stringent mouse ortholog exists and is disease-annotated",
+      "receipt": {
+        "ortholog": "MGI:98834",
+        "stringencyFilter": "stringent",
+        "read_on": "2026-08-25",
+        "note": "Also a positive control. Listed here so the two control classes are visibly independent: this one must never be unreachable even if the answered assertion were removed."
+      },
+      "assay": "mouse"
+    },
+    {
+      "subject": "HGNC:15965",
+      "symbol": "DAZ3",
+      "forbidden_causes": [
+        "unstudied",
+        "absent"
+      ],
+      "because": "no mouse counterpart exists: the only stringent hit, Dazl, is the reciprocal-best partner of human DAZL, not of DAZ3, so a search for a DAZ3 model in mouse could not be run and must not be reported as run",
+      "receipt": {
+        "stringent_hit": "MGI:1342328",
+        "stringent_hit_symbol": "Dazl",
+        "isBestScore": true,
+        "isBestScoreReverse": false,
+        "reverse_reciprocal_best_partners": [
+          {
+            "id": "HGNC:2685",
+            "symbol": "DAZL"
+          }
+        ],
+        "read_on": "2026-09-04",
+        "note": "The DAZ cluster is a primate Y-linked duplication of DAZL; the mouse genome carries Dazl and Boll, no DAZ. Alliance says the same thing in its flags: DAZ3 to Dazl is best-score forward and not reciprocal, and Dazl to DAZL is reciprocal-best. HGNC:15964 is DAZ2, not DAZ3; the demo once carried that id."
+      },
+      "assay": "mouse"
+    },
+    {
+      "subject": "HGNC:8261",
+      "symbol": "OR2J3",
+      "forbidden_causes": [
+        "unreachable",
+        "unstudied"
+      ],
+      "because": "an entity exists (Or2j3, stringent), so unreachable is false; and its reciprocal-best human partners are OR2J2 and OR2J1, so one-to-one orthology is undefined in this family and the cell is method_limited, not a search that found nothing",
+      "receipt": {
+        "stringent_hit": "MGI:2177520",
+        "stringent_hit_symbol": "Or2j3",
+        "isBestScore": true,
+        "isBestScoreReverse": false,
+        "reverse_reciprocal_best_partners": [
+          {
+            "id": "HGNC:8260",
+            "symbol": "OR2J2"
+          },
+          {
+            "id": "HGNC:8259",
+            "symbol": "OR2J1"
+          }
+        ],
+        "read_on": "2026-09-04",
+        "note": "Mouse olfactory receptors are a massively expanded many-to-many family. An earlier read at limit=50 returned no mouse record at all, so a truncated read would have confirmed the wrong answer; the full set needs limit>50."
+      },
+      "assay": "mouse"
+    }
+  ]
+}

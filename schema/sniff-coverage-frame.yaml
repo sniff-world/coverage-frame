@@ -1,0 +1,358 @@
+id: https://sniff.world/schema/coverage-frame
+name: sniff_coverage_frame
+title: "Sniff CoverageFrame: reasoned absence over a bounded question space"
+version: 0.2.8
+license: https://creativecommons.org/publicdomain/zero/1.0/
+
+description: >-
+  A small LinkML extension over Biolink for the one thing Biolink cannot express:
+  a REASONED ABSENCE of assertion. Biolink's Association.negated says "we assert
+  this relationship is false" (the `absent` cause below). It has no vocabulary for
+  the other five darkness causes, and "nobody has looked" is both the most common
+  state of biomedical knowledge and the most useful thing to know when deciding
+  what to study next.
+
+
+  The modeling unit is deliberately NOT an absence edge (the ~447M non-edges of a
+  bipartite space carry no information). It is a CoverageFrame: a bounded question
+  over a defined population, where an empty cell is itself informative because an
+  answer was expected. Kept to one class pair and two enums so it stays a
+  contribution, not a fork: it aligns to Biolink by mapping (see the `exact_mappings`
+  and `meaning:` bindings), rather than vendoring the full model.
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  biolink: https://w3id.org/biolink/vocab/
+  sniff: https://sniff.world/schema/
+  infores: https://w3id.org/biolink/infores/
+  ECO: http://purl.obolibrary.org/obo/ECO_
+  dcterms: http://purl.org/dc/terms/
+  # Identifier prefixes the examples use. Declared so every CURIE in a shipped
+  # frame expands; an undeclared prefix is a CURIE that does not round-trip.
+  ENSEMBL: http://identifiers.org/ensembl/
+  HGNC: http://identifiers.org/hgnc/
+  MGI: http://identifiers.org/MGI/
+  OMIA: http://identifiers.org/omia/
+  NCBITaxon: http://purl.obolibrary.org/obo/NCBITaxon_
+default_prefix: sniff
+default_range: string
+
+imports:
+  - linkml:types
+
+see_also:
+  - https://sniff.world/federation
+  - https://w3id.org/biolink/vocab/Association
+
+keywords:
+  - reasoned absence
+  - knowledge coverage
+  - dark knowledge
+  - Biolink extension
+
+classes:
+
+  CoverageFrame:
+    description: >-
+      A bounded question space over a defined population, where the absence of an
+      assertion is itself informative because an answer was expected. The unit of
+      reasoned absence: it names the question, the populations, the expected
+      cardinality, and how the expected answers resolve into answered vs dark cells.
+    tree_root: true
+    implements:
+      - biolink:InformationContentEntity
+    comments:
+      - >-
+        The implements binding states the companion posture precisely:
+        conformance to the biolink:InformationContentEntity contract without
+        inheritance and without importing Biolink. The id slot carries
+        biolink:id semantics and as_of carries biolink:creation_date semantics
+        (slot-level implements below). biolink:category is deliberately not
+        carried: coverage objects live on a companion plane joined to the
+        knowledge graph on CURIEs, not in its node space, and a category is
+        assigned only in a derived KGX projection, never on the canonical
+        object.
+    slots:
+      - id
+      - question
+      - subject_population
+      - object_population
+      - predicate
+      - expected_cardinality
+      - answered_count
+      - dark_count
+      - dark_by_cause
+      - cell_source
+      - sources_checked
+      - as_of
+
+  FrameCell:
+    description: >-
+      One subject in a CoverageFrame. Its status is answered (a cited assertion
+      exists), negated (an assertion that the relationship is false exists), or
+      dark (no assertion exists, with a named cause). A dark cell is the payload:
+      it turns a missing edge into a typed, actionable statement about what is not
+      yet known and why.
+    slots:
+      - frame
+      - subject
+      - symbol
+      - object
+      - status
+      - dark_cause
+      - association
+      - recoverability
+      - n
+      - basis
+      - floor_id
+      - as_of
+    rules:
+      - description: >-
+          A dark cell must carry a typed cause. This is the schema's central
+          promise, held as a machine-checkable rule rather than prose.
+        preconditions:
+          slot_conditions:
+            status:
+              equals_string: dark
+        postconditions:
+          slot_conditions:
+            dark_cause:
+              required: true
+      - description: >-
+          basis states how a present value was produced; a dark cell has no
+          present value, so basis must be absent there.
+        preconditions:
+          slot_conditions:
+            status:
+              equals_string: dark
+        postconditions:
+          slot_conditions:
+            basis:
+              value_presence: ABSENT
+
+  DarkCauseTally:
+    description: >-
+      One cause's share of a frame's dark cells. Serialized in the compact
+      dict form, so a tally reads as {cause: count} keyed by DarkCauseEnum.
+    attributes:
+      cause:
+        key: true
+        range: DarkCauseEnum
+        description: The dark cause this tally counts.
+      count:
+        required: true
+        range: integer
+        minimum_value: 0
+        description: Number of dark cells carrying this cause.
+
+slots:
+
+  id:
+    identifier: true
+    range: uriorcurie
+    implements:
+      - biolink:id
+    description: The CoverageFrame identifier. Carries biolink:id semantics.
+
+  question:
+    description: Human-readable statement of what the frame asks.
+
+  subject_population:
+    description: The subject set, for example GenCC or ClinVar human disease genes.
+
+  object_population:
+    description: The object set, for example their canine orthologs.
+
+  predicate:
+    range: uriorcurie
+    description: The Biolink predicate the frame asks about.
+    exact_mappings:
+      - biolink:predicate
+
+  expected_cardinality:
+    range: integer
+    minimum_value: 0
+    description: How many answers the frame expects if the space were fully covered.
+
+  answered_count:
+    range: integer
+    minimum_value: 0
+    description: Cells with a cited assertion.
+
+  dark_count:
+    range: integer
+    minimum_value: 0
+    description: Cells with no assertion, each carrying a DarkCauseEnum.
+
+  dark_by_cause:
+    range: DarkCauseTally
+    multivalued: true
+    inlined: true
+    description: >-
+      Tally of dark cells keyed by DarkCauseEnum, as inlined DarkCauseTally
+      entries (compact dict: {cause: count}). Until 0.2.4 this slot was
+      declared as multivalued integers, a shape the shipped artifact never
+      had; the correction is recorded rather than hidden.
+
+  cell_source:
+    range: uriorcurie
+    description: The artifact holding the per-cell FrameCell records.
+
+  sources_checked:
+    range: uriorcurie
+    multivalued: true
+    description: The infores CURIEs of the resources that were queried to build the frame.
+
+  as_of:
+    range: date
+    implements:
+      - biolink:creation_date
+    description: >-
+      The date the frame was computed. Renamed locally under the class-level
+      implements binding: an as_of is the creation date of the snapshot object
+      (biolink:creation_date).
+
+  frame:
+    range: CoverageFrame
+    description: The CoverageFrame this cell belongs to.
+
+  subject:
+    range: uriorcurie
+    description: The subject entity of the cell.
+  symbol:
+    range: string
+    description: >-
+      The human-readable label for the subject, beside its identifier. Optional,
+      and never the identity: two sources may label one identifier differently,
+      so a symbol is a convenience for a reader and is never matched on.
+      Declared because the cells we publish have always carried it. It went
+      undeclared while every count reconciled, which is the shape of defect a
+      key-level check cannot see and instance validation catches immediately.
+
+  object:
+    range: uriorcurie
+    description: The object entity of the cell, when one is expected.
+
+  status:
+    range: CellStatusEnum
+    required: true
+    description: Whether the cell is answered, negated, or dark.
+
+  dark_cause:
+    range: DarkCauseEnum
+    description: >-
+      The reason no assertion exists. Required when status is dark, enforced
+      by the FrameCell rule (not only this sentence).
+
+  association:
+    range: uriorcurie
+    description: The Biolink Association backing the cell when status is answered.
+    exact_mappings:
+      - biolink:Association
+
+  recoverability:
+    description: Optional note for assay-limited or method-limited cells.
+
+  n:
+    range: integer
+    minimum_value: 0
+    description: >-
+      Denominator that produced a present claim. Distinct from darkness.
+      A cell may carry an n and still fall below its reporting floor.
+
+  basis:
+    range: ClaimBasisEnum
+    description: How a present value was produced. Absent on a dark cell.
+
+  floor_id:
+    description: >-
+      Which named reporting floor judged this cell, for example
+      sniff:floor/reportable-n. Not a score. This schema does not carry a float
+      confidence on a health-adjacent row.
+
+enums:
+
+  CellStatusEnum:
+    description: The three resolutions of an expected answer cell.
+    permissible_values:
+      answered:
+        description: An assertion exists and is cited.
+      negated:
+        description: >-
+          An assertion exists that the relationship is false. Corresponds to a
+          Biolink association carrying negated = true; biolink:negated is a slot,
+          not a concept, so it is a see_also rather than a meaning.
+        see_also:
+          - https://biolink.github.io/biolink-model/negated/
+      dark:
+        description: No assertion exists; see dark_cause.
+
+  DarkCauseEnum:
+    description: >-
+      The causes of darkness, modeled as they are actually computed. Only `absent`
+      is expressible in Biolink today (as Association.negated). Prior art verified
+      2026-08-19 against Biolink v4.4.4, the ECO 2026-07-10 release, GO, and FHIR:
+      the nearest existing vocabularies are single-cause and record-scoped.
+      ECO:0000035 (no evidence data found; GO's ND code is its manual-assertion
+      child ECO:0000307) is the closest cousin of `unstudied` (a literature or
+      exhaustion search that found nothing) and is bound below as a close mapping.
+      `no_disease_anchor` is a different claim: no ClinVar P/LP disease-gene
+      anchor to bridge from, not that the gene is unstudied. FHIR data-absent-reason
+      types why one field on one existing record is empty. No vocabulary we could
+      find types the cause of absence per cell over a declared, bounded question
+      space, and `below_bar`, `unreachable`, `method_limited`, and
+      `no_disease_anchor` have no term in Biolink or any evidence ontology checked.
+      Where no mapping appears below, that absence is verified and load-bearing,
+      not an oversight.
+    see_also:
+      - https://github.com/biolink/biolink-model/issues/247
+      - https://www.hl7.org/fhir/R4/valueset-data-absent-reason.html
+    permissible_values:
+      absent:
+        description: >-
+          Studied, and the entity or relationship does not exist. The one cause
+          Biolink can already express, as an association with negated = true. A
+          cell whose cause is absent has status negated, never dark: absent is
+          an evidenced no, not a darkness, and check-conformance refuses the
+          pairing dark + absent.
+        see_also:
+          - https://biolink.github.io/biolink-model/negated/
+      unstudied:
+        description: >-
+          A literature or exhaustion search addressing this question in this
+          species found nothing. Not for "no Mendelian disease-gene anchor in
+          ClinVar"; that is no_disease_anchor.
+        close_mappings:
+          - ECO:0000035
+      no_disease_anchor:
+        description: >-
+          Dog ortholog exists but no human P/LP disease evidence to bridge from
+          (ascertainment darkness). Not a claim that the gene is unstudied in
+          the literature.
+      below_bar:
+        description: >-
+          Human evidence exists but sits under our review bar (for example under a
+          3-star ClinVar threshold); distinct from method_limited. Relates to
+          evidence strength (ECO) but no ECO term names "below a downstream bar".
+      unreachable:
+        description: No ortholog or entity exists for the assay to observe.
+      method_limited:
+        description: >-
+          The method cannot resolve this class of entity even where the underlying
+          data are present.
+
+  ClaimBasisEnum:
+    description: >-
+      How a present claim was produced. Companion to DarkCauseEnum, which names
+      absence. Strength is n plus basis plus floor. A score float is forbidden.
+    permissible_values:
+      measured:
+        description: Instrument or lab-backed on this subject.
+      estimated:
+        description: Inferred or owner-sketched, never dressed as a measurement.
+      cited_cohort:
+        description: A published or atlas cohort statistic with a cited n.
+      owner_register:
+        description: An owner-contributed aggregate, cohort-of, never population-of.
+      this_dog_lived:
+        description: Repeated measures on one dog. Never a breed fact.

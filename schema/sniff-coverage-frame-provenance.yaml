@@ -1,0 +1,606 @@
+id: https://sniff.world/schema/coverage-frame-provenance
+name: sniff_coverage_frame_provenance
+title: Sniff CoverageFrame provenance module (an absence claim carries its search)
+version: 0.3.14
+license: https://creativecommons.org/publicdomain/zero/1.0/
+
+description: >-
+  The provenance module for reasoned absence. A presence claim's warrant is a
+  pointer (the citation); an absence claim's warrant is a PROCEDURE. This module
+  makes that procedure a schema citizen: the SearchProtocol that produced a frame
+  (pinned to runnable code, with a declared completeness and cause-precedence
+  funnel), the versioned PopulationDefinitions it enumerated (whose counts double
+  as drift checksums), and the positive controls that calibrate it (held-out
+  known-answerable cells the protocol must find before its darkness counts; a
+  dark cell not shown to LIGHT on a planted positive is worth zero).
+
+
+  Importable separately from the core (sniff-coverage-frame), which stays frozen
+  at one class pair and two enums. Conformance to the core alone is conformance;
+  this module is how a producer PROVES the rigor of its dark cells. Two frames
+  are comparable as knowledge flow only when their population DEFINITIONS and
+  protocol are identical; a newer source_version under the same definitions is
+  the world moving, and its membership changes are typed boundary events in the
+  delta module. That rule is what makes world-moved vs frame-moved computable.
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  biolink: https://w3id.org/biolink/vocab/
+  sniff: https://sniff.world/schema/
+  infores: https://w3id.org/biolink/infores/
+  dcterms: http://purl.org/dc/terms/
+default_prefix: sniff
+default_range: string
+
+imports:
+  - linkml:types
+  - sniff-coverage-frame
+
+see_also:
+  - https://sniff.world/schema/coverage-frame
+  - https://sniff.world/schema/coverage-frame-delta
+
+classes:
+
+  SearchProtocol:
+    description: >-
+      The reproducible procedure that resolved a frame's cells. The strongest
+      form of a methods section is a pointer to runnable open code at a pinned
+      version. Determinism is the contract; the specific precedence order is a
+      protocol parameter, so two parties running the same protocol version on
+      the same populations must produce the same cells, and a disagreement is
+      diagnosable rather than a shrug.
+    implements:
+      - biolink:Procedure
+    comments:
+      - >-
+        implements, not is_a: a SearchProtocol conforms to the
+        biolink:Procedure contract (a series of actions conducted in a certain
+        order or manner, with an id) without inheriting the NamedThing
+        hierarchy or importing Biolink. biolink:category is not carried, per
+        the same companion-plane rule stated on the core classes.
+    slots:
+      - id
+      - protocol_version
+      - pipeline
+      - match_criteria
+      - completeness
+      - cause_precedence
+      - dial_references
+      - positive_controls
+      - darkness_controls
+      - executed_at
+      - recall
+      - end_to_end_recall
+      - filter_independence
+      - negative_controls
+
+  PopulationDefinition:
+    description: >-
+      A versioned, counted population a frame enumerates over. Identity is the
+      INTENSION: the id's version (an integer, as in
+      sniff:population/x@1) bumps only when the selection procedure itself
+      changes, never when a new source release changes the membership. The
+      source_version and count are per-release measurements. The count doubles
+      as a drift checksum: same definition version, same source_version, and a
+      differing count means the pipeline drifted (a bug); a newer
+      source_version under the same definition is the world moving, and the
+      delta module enumerates the membership change as boundary events.
+    slots:
+      - id
+      - source
+      - source_version
+      - selection
+      - count
+
+  DarknessControl:
+    description: >-
+      One held-out cell known to be DARK FOR A SPECIFIC CAUSE, independently of
+      the pipeline: a primate-only gene for `unreachable`, a gene whose ClinVar
+      records all sit under the declared bar for `below_bar`, a gene with a clean
+      ortholog and no disease anchor for `no_disease_anchor`. The protocol must
+      observe the expected cause on every darkness control before its dark cells
+      may ship, and it must carry at least one for every cause its tallies claim.
+      Positive controls prove the instrument finds what exists; darkness controls
+      prove it names why it does not, which is the product. Added after both dark
+      cells of a demonstration frame turned out to be mistyped while every positive
+      control passed: an instrument calibrated only on the cells that light has
+      proven nothing about the cells that do not.
+    slots:
+      - subject
+      - expected_cause
+      - observed_cause
+      - observed_status
+      - basis
+      - basis_kind
+      - receipt_source
+      - receipt_as_of
+      - outcome
+    slot_usage:
+      basis:
+        range: string
+        description: >-
+          Why this cell is independently known dark for this cause: the paper,
+          the registry query, or the source read, with its date. A citation
+          sentence, not a claim category.
+
+  PositiveControl:
+    description: >-
+      One held-out cell known to be answerable, independent of the pipeline
+      (for Sniff's reference frame: canine disease genes documented in OMIA
+      before this pipeline existed). The protocol must observe the expected
+      status on every control before its dark cells may ship. Calibration is
+      the difference between measured ignorance and a parsing bug wearing
+      ignorance's clothes.
+    slots:
+      - subject
+      - expected_status
+      - observed_status
+      - basis
+      - basis_kind
+      - receipt_source
+      - receipt_as_of
+      - outcome
+    slot_usage:
+      basis:
+        range: string
+        description: >-
+          Why this cell is independently known answerable (the held-out
+          evidence, cited), stated so a reviewer can check the control
+          itself. Overrides the core basis range (ClaimBasisEnum) for this
+          class only; a control's basis is a citation sentence, not a claim
+          category. Until 0.3.3 this override was a conflicting global
+          redefinition of the core slot.
+
+  ProvenancedCoverageFrame:
+    is_a: CoverageFrame
+    description: >-
+      A CoverageFrame that carries its warrant: the protocol that resolved it
+      and the versioned populations it enumerated. The core class stays frozen;
+      adopters who cannot yet publish protocols emit plain CoverageFrames and
+      graduate to this class when the procedure is publishable.
+    slots:
+      - search_protocol
+      - subject_population_ref
+      - object_population_ref
+      - release_id
+      - conforms_to
+      - scope
+      - constituents
+
+  FrameScope:
+    description: >-
+      What this frame measured, and what it deliberately did not. A question
+      that outruns its sources is an overclaim every dark cell inherits.
+      sources_queried must match the frame's sources_checked. sources_not_queried
+      names known authorities left out, with a reason and a named path to close
+      each gap, so an unqueried source is a typed limitation rather than silence.
+    slots:
+      - measures
+      - sources_queried
+      - sources_not_queried
+
+  SourceOmission:
+    description: >-
+      One authority this frame did not query. The reason is why, for this
+      question. close_path is how the gap becomes queried rather than remaining
+      an implicit hole in sources_checked.
+    slots:
+      - source
+      - reason
+      - close_path
+
+  Recall:
+    description: >-
+      A measured recall figure bound to the identity of the control set that
+      produced it. A recall number whose denominator can silently change is
+      the failure this class exists to prevent.
+    slots:
+      - value
+      - control_set
+      - control_set_hash
+      - control_set_size
+      - dial
+      - measured_at
+
+  FilterIndependence:
+    description: >-
+      How much two candidate filters fail on the same items. When the observed
+      shared-miss count materially exceeds the independence expectation,
+      stacking further filters of that family will not recover recall.
+    slots:
+      - filters_compared
+      - shared_miss_jaccard
+      - observed_over_expected
+      - marginal_gain
+
+slots:
+
+  protocol_version:
+    required: true
+    description: >-
+      The protocol's own version, bumped on ANY behavior change to the emitting
+      pipeline. Producers should hold this with a mechanism that notices silent
+      drift (Sniff's gate hashes the emitting script and fails the build when
+      the code changes without a version bump).
+
+  pipeline:
+    range: uriorcurie
+    required: true
+    description: >-
+      Identifies the code that emitted this frame. A URI that resolves to the
+      runnable source where that code is public; otherwise a CURIE naming the
+      pipeline, or a URI resolving to a public description of it. The field
+      says WHAT produced the frame and promises the identifier is stable and
+      resolvable; it does not promise a reader can execute what they find
+      there. Stated this way because the earlier wording ("resolvable to the
+      runnable source") was violated by every value a closed-source pipeline
+      can honestly supply, which makes the contract unmeetable rather than
+      strict.
+
+  match_criteria:
+    required: true
+    description: Human-readable statement of what counts as "answered" for a cell.
+
+  completeness:
+    range: CompletenessEnum
+    required: true
+    description: >-
+      Operational completeness of the enumeration. This is a property of the
+      protocol, not the frame. `absent` cells are only assertable under an
+      exhaustive protocol; a sampled or heuristic search may emit `unstudied`,
+      never `absent`.
+
+  cause_precedence:
+    range: DarkCauseEnum
+    multivalued: true
+    description: >-
+      The declared funnel order for assigning the single binding dark_cause
+      when several causes could apply. Instrument-side blockers before
+      world-side by default (unreachable, method_limited, no_disease_anchor,
+      unstudied, below_bar, absent). The funnel makes cause assignment an
+      algorithm, which keeps dark_by_cause tallies additive and cross-party
+      comparable. Bindings are per-frame: no_disease_anchor is a ClinVar-anchor
+      fact; unstudied is a literature-search fact.
+
+  dial_references:
+    range: uriorcurie
+    multivalued: true
+    description: >-
+      Named, versioned criteria behind any subjective cause (for example
+      sniff:dial/clinvar-review-floor@1 for below_bar). The enum stays closed
+      and interoperable; every adopter's bar is explicit and diffable. A dial
+      change is a criteria_change transition in the delta module, never a
+      silent redefinition of darkness.
+
+  positive_controls:
+    range: PositiveControl
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+    description: >-
+      The calibration set, lit side. A frame whose protocol fails any positive
+      control cannot ship its dark cells.
+
+  darkness_controls:
+    range: DarknessControl
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+    description: >-
+      The calibration set, dark side. One per cause the frame's tallies claim,
+      each independently known dark for that cause. A frame whose protocol
+      assigns a cause it has never demonstrated on a known case cannot ship.
+
+  executed_at:
+    range: date
+    description: When the protocol run that produced the frame executed.
+
+  reason:
+    description: >-
+      Why this source was not queried for this question. Not a hedge on the
+      cells; a statement of the search that was not run.
+
+  source:
+    range: uriorcurie
+    required: true
+    description: The infores CURIE of the resource the population was selected from.
+
+  source_version:
+    description: The release or version of the source the selection ran against.
+
+  selection:
+    required: true
+    description: The criteria or query that produced the population.
+
+  count:
+    range: integer
+    required: true
+    minimum_value: 0
+    description: The resulting cardinality; the population's drift checksum.
+
+  expected_status:
+    range: CellStatusEnum
+    required: true
+    description: The status the control cell is independently known to have.
+
+  expected_cause:
+    range: DarkCauseEnum
+    required: true
+    description: The cause a darkness control is independently known to carry.
+
+  basis_kind:
+    range: BasisKindEnum
+    required: true
+    description: >-
+      How much assurance the basis carries, said out loud so nobody reads more into
+      a row than it holds. A paper is independent of every database the protocol
+      queries. A different database is independent of the protocol's source but
+      not of the world. The protocol's own source, read by hand, catches builder
+      bugs, parsing errors and wrong filters, which is most of the value, and
+      catches no error in the source itself.
+
+  receipt_source:
+    range: uriorcurie
+    description: >-
+      Where the basis was read: an infores CURIE for a database, a PMID for a
+      paper. Required when basis_kind is same_source_hand_verified, because that
+      is the receipt the outcome logic re-checks.
+
+  receipt_as_of:
+    range: date
+    description: >-
+      The UTC calendar date the receipt was read. Every date in this schema
+      family is a UTC calendar date; a reader in a western timezone may see a
+      receipt dated tomorrow, and that is the convention, not a future-dated read.
+
+  outcome:
+    range: ControlOutcomeEnum
+    required: true
+    description: >-
+      What happened when the protocol ran against this control. `held` is the
+      only outcome that counts toward calibration. `world_moved` is the routing
+      for a control on a mutable source whose receipt facts no longer hold: the
+      day an expert panel reviews a below_bar control's gene, that control fails
+      correctly, the cell should leave below_bar, and the frame still ships if
+      another held control covers the cause; the delta carries the movement. A
+      control that fails while its receipt facts still hold is `failed`, the
+      funnel is wrong, and nothing ships.
+
+  observed_cause:
+    range: DarkCauseEnum
+    required: true
+    description: The cause the protocol actually assigned to the darkness control's cell.
+
+  observed_status:
+    range: CellStatusEnum
+    required: true
+    description: The status the protocol actually produced for the control cell.
+
+  release_id:
+    range: uriorcurie
+    description: >-
+      The release this frame snapshot belongs to. Declared in 0.3.3; the
+      shipped artifact had carried it undeclared, which the reference
+      validation loop now makes impossible to repeat silently.
+
+  conforms_to:
+    range: uriorcurie
+    exact_mappings:
+      - dcterms:conformsTo
+    description: The schema class this frame instance claims conformance to.
+
+  scope:
+    range: FrameScope
+    inlined: true
+    description: >-
+      The frame's measurement boundary. Rendered on every cell so a dark
+      answer cannot be read as a census of sources this frame did not search.
+
+  measures:
+    description: >-
+      One sentence naming what the frame measures, and what a reader must not
+      take it to have measured.
+
+  sources_queried:
+    range: uriorcurie
+    multivalued: true
+    description: >-
+      The infores CURIEs actually searched. Must equal the parent frame's
+      sources_checked. Repeated here so a cell view can render the boundary
+      without joining.
+
+  sources_not_queried:
+    range: SourceOmission
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+    description: >-
+      Known authorities for this question that were not searched, each with
+      a reason and a named path to close the gap.
+
+  close_path:
+    description: >-
+      How this omission becomes a queried source rather than remaining a
+      silent hole. A named next protocol, join, or parallel frame, not a
+      vague intention.
+
+  constituents:
+    range: uriorcurie
+    multivalued: true
+    description: >-
+      When this frame is an intersection, the CoverageFrame ids it stacks.
+      Constituents MUST share one subject axis (same population definition,
+      same cell keys, same expected cardinality). The intersection records
+      only lit or dark per constituent; dark causes stay on those frames.
+      sources_checked on an intersection is the union of the leaves' sources.
+      Recursive: a constituent may itself be an intersection.
+
+  search_protocol:
+    range: uriorcurie
+    required: true
+    description: The SearchProtocol (by id) that resolved this frame's cells.
+
+  subject_population_ref:
+    range: uriorcurie
+    required: true
+    description: The PopulationDefinition (by id) enumerated on the subject side.
+
+  object_population_ref:
+    range: uriorcurie
+    description: The PopulationDefinition (by id) resolved against on the object side.
+
+  recall:
+    range: Recall
+    inlined: true
+    description: >-
+      Measured sensitivity of this protocol against its positive controls. A
+      protocol may carry passing controls while concealing how blind it was;
+      this slot is what makes that impossible.
+
+  end_to_end_recall:
+    range: Recall
+    inlined: true
+    description: >-
+      Recall measured after EVERY stage, not just retrieval. A multi-stage
+      protocol has more than one recall and they answer different questions:
+      `recall` is whether the search returned candidate documents for a control,
+      and this is whether the control's cell actually ended up answered. The
+      second is bounded above by the first, and the gap between them is a map of
+      whatever sits in between. Declared 0.3.5 after a producing pipeline
+      emitted it as an undeclared key, which the schema now forbids: a
+      producer may not carry a field the schema never promised.
+
+  filter_independence:
+    range: FilterIndependence
+    inlined: true
+    description: >-
+      Whether candidate filters fail on the same items. Stored as a
+      measurement, not an observation, so the conclusion stays re-derivable.
+
+  negative_controls:
+    range: PositiveControl
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+    description: >-
+      Cells known NOT to be answerable, on which the protocol must stay silent.
+      Positive controls alone cannot detect an inflated instrument: a recall
+      figure rises when automated annotations are counted as literature,
+      and only a negative control detects it.
+
+  value:
+    range: float
+    minimum_value: 0
+    maximum_value: 1
+    required: true
+    description: Measured recall as a fraction.
+
+  control_set:
+    range: uriorcurie
+    required: true
+    description: Versioned id of the control set, for example sniff:controls/frame-one-positives@1.
+
+  control_set_hash:
+    required: true
+    description: SHA-256 over the sorted control member ids. Binds the figure to its denominator's identity.
+
+  control_set_size:
+    range: integer
+    minimum_value: 1
+    required: true
+    description: Number of controls the figure was measured over.
+
+  dial:
+    range: uriorcurie
+    required: true
+    description: The named versioned dial the measurement was taken under.
+
+  measured_at:
+    range: date
+    required: true
+    description: When the measurement ran.
+
+  filters_compared:
+    multivalued: true
+    required: true
+    description: Names of the filters compared.
+
+  shared_miss_jaccard:
+    range: float
+    description: Jaccard index of the filters' miss sets.
+
+  observed_over_expected:
+    range: float
+    description: Observed shared misses divided by the count independence predicts.
+
+  marginal_gain:
+    range: integer
+    minimum_value: 0
+    description: Additional controls recovered by adding the second filter to the best single filter.
+
+enums:
+
+  CompletenessEnum:
+    description: >-
+      How completely the protocol enumerated the population, defined
+      operationally so the term is checkable rather than a vibe.
+    permissible_values:
+      exhaustive:
+        description: The protocol evaluated every cell in the declared population.
+      sampled:
+        description: >-
+          The protocol evaluated a declared fraction under a declared sampling
+          method. Dark tallies extrapolate; absent is not assertable.
+      heuristic:
+        description: >-
+          Enumeration is not guaranteed (for example keyword search). The
+          weakest honest claim; absent is not assertable.
+
+  BasisKindEnum:
+    description: The kind of evidence a control's basis is, ranked by independence from the protocol's own source.
+    permissible_values:
+      independent_literature:
+        description: A published paper. Independent of every database the protocol queries; immutable, so a mismatch is always a pipeline defect.
+      independent_source:
+        description: A database other than the one the protocol queries for this cell (for example OMIA for a ClinVar-anchored protocol). Independent of the source, not of the world.
+      same_source_hand_verified:
+        description: >-
+          The protocol's own source, read by hand outside the pipeline, with a dated
+          receipt. Catches builder bugs, parsing errors and wrong filters; catches no
+          error in the source. A control of this kind on a mutable database is a
+          world-movement tripwire and routes to `world_moved`, never to a build failure
+          on its own.
+
+  ControlOutcomeEnum:
+    description: What the protocol run did to a control.
+    permissible_values:
+      held:
+        description: Observed equals expected. The only outcome that counts toward calibration.
+      world_moved:
+        description: Observed differs from expected and the receipt facts no longer hold in the ingested source. The world moved; re-plant a control for the cause.
+      failed:
+        description: Observed differs from expected while the receipt facts still hold. The funnel is wrong. Nothing ships.
+
+  IntersectionStatusEnum:
+    description: >-
+      How a cell resolves across the constituent frames of an intersection.
+      These tokens are scoped to the named stack. They are not claims about
+      sources outside that stack. A third frame must use these values; it
+      must not invent a parallel convention.
+    permissible_values:
+      lit_all:
+        description: Answered in every constituent frame of this stack.
+      lit_any:
+        description: >-
+          Answered in at least one constituent frame of this stack, and not
+          in all of them.
+      dark_in_all_frames:
+        description: >-
+          Dark in every constituent frame of this stack. Not a claim that
+          nobody has looked, and not a claim about sources that are not in
+          the stack.
+      unresolved:
+        description: >-
+          Not evaluated by this stack. The subject is off the shared axis,
+          or a constituent did not emit a cell.

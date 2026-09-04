@@ -1,0 +1,17 @@
+# Linter configuration for the Sniff schema family.
+#
+# standard_naming is disabled for one documented exception: the core schema's
+# slot named `n` (a sample size, the conventional statistical symbol). The
+# name is deliberate and consumer-facing (n and basis travel together on every
+# present claim; renaming it to satisfy the linter would be a breaking change
+# to a frozen core with no semantic gain). Disabling the rule is the only
+# granularity linkml-lint offers; every other recommended rule stays active,
+# and CI still hard-fails on any new warning from those rules.
+#
+# History: the bare recommended ruleset exits nonzero on this warning, which
+# silently turned the LinkML CI arm red on 2026-08-16. This file is the fix
+# and the record of why.
+extends: recommended
+rules:
+  standard_naming:
+    level: disabled

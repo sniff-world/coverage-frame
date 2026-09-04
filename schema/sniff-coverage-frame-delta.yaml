@@ -1,0 +1,218 @@
+id: https://sniff.world/schema/coverage-frame-delta
+name: sniff_coverage_frame_delta
+title: Sniff CoverageFrame delta module (frames are snapshots, change is typed)
+version: 0.3.4
+license: https://creativecommons.org/publicdomain/zero/1.0/
+
+description: >-
+  The delta module for reasoned absence. A frame is a snapshot and stale
+  darkness silently lies, so change is a first-class typed object rather than a
+  regenerated file's diff. A FrameDelta separates the two things that can move:
+  the WORLD (identical populations and protocol, cells flipped, knowledge
+  changed) and the FRAME (populations, protocol, or dials changed, so the
+  question changed). Blending them produces a confident falsehood; the kind
+  field makes the blend inexpressible.
+
+
+  Every changed cell is enumerated as a CellTransition with a typed trigger and
+  a reference. The correction trigger is the designed repair path: a dark cell
+  that was our bug becomes a typed, public, cited correction instead of a
+  silent overwrite.
+
+
+  Population definitions are intensional (see the provenance module), so a new
+  source release can legitimately change the MEMBERSHIP of an unchanged
+  definition: the world does not only answer questions, it also mints and
+  retires them. Those membership changes are first-class CellBoundaryEvents
+  (entered, left), never silent. For world-moved deltas the conservation
+  identity binds the frame's DECLARED counts to the enumerated flows:
+  answered(t1) = answered(t0) + darkToAnswered - answeredToDark
+  + enteredAnswered - leftAnswered, and cardinality(t1) = cardinality(t0)
+  + entered - left, every cell in exactly one status per release. A
+  regenerated frame that does not reconcile against its predecessor plus the
+  delta is a build failure, and the state machine audits itself.
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  biolink: https://w3id.org/biolink/vocab/
+  sniff: https://sniff.world/schema/
+  infores: https://w3id.org/biolink/infores/
+  dcterms: http://purl.org/dc/terms/
+default_prefix: sniff
+default_range: string
+
+imports:
+  - linkml:types
+  - sniff-coverage-frame
+
+see_also:
+  - https://sniff.world/schema/coverage-frame
+  - https://sniff.world/schema/coverage-frame-provenance
+
+classes:
+
+  FrameDelta:
+    description: >-
+      The typed change between two releases of one frame. Comparable only when
+      kind is world_moved; a frame_moved delta documents that the question
+      itself changed and its transitions are annotations, not knowledge flow.
+    slots:
+      - id
+      - previous_frame
+      - current_frame
+      - kind
+      - transitions
+      - entered
+      - left
+
+  CellTransition:
+    description: >-
+      One cell's move between statuses or causes across a release, with a typed
+      trigger and a citation for what moved it. The dark-to-answered transition
+      is the product's core loop made schema: the record updates itself and the
+      owner is told, with a citation.
+    slots:
+      - subject
+      - symbol
+      - from_status
+      - from_cause
+      - to_status
+      - to_cause
+      - trigger
+      - reference
+
+  CellBoundaryEvent:
+    description: >-
+      One cell entering or leaving the frame's universe across a release. Under
+      world_moved this is knowledge flow (a new source release minted or
+      retired the question cell itself, for example a gene newly carrying a
+      pathogenic classification); under frame_moved it is an annotation of the
+      changed question. Either way it is enumerated, because a silently
+      appearing or vanishing cell is the delta equivalent of an untyped gap.
+    slots:
+      - subject
+      - symbol
+      - status
+      - dark_cause
+      - trigger
+      - reference
+
+slots:
+
+  previous_frame:
+    range: uriorcurie
+    required: true
+    description: The prior frame release (by id plus release).
+
+  current_frame:
+    range: uriorcurie
+    required: true
+    description: The new frame release (by id plus release).
+
+  kind:
+    range: DeltaKindEnum
+    required: true
+    description: >-
+      world_moved, frame_moved, or correction, never blended. Populations
+      and protocol identical AND the upstream snapshot unchanged means the
+      record was corrected, not that anything moved. Identical definitions
+      over a NEW upstream snapshot means the world moved. Anything else
+      means the frame moved.
+
+  transitions:
+    range: CellTransition
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+    description: Every changed cell, enumerated.
+
+  entered:
+    range: CellBoundaryEvent
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+    description: Every cell that entered the universe, enumerated with its arrival status.
+
+  left:
+    range: CellBoundaryEvent
+    multivalued: true
+    inlined: true
+    inlined_as_list: true
+    description: Every cell that left the universe, enumerated with its departure status.
+
+  # `symbol` is the core module's slot and is not redefined here. Until 0.3.4 this
+  # module carried a second global definition, which silently replaced the core's
+  # description on every class that imports both (the same collision the
+  # provenance module fixed at 0.3.3 with slot_usage).
+
+  from_status:
+    range: CellStatusEnum
+    required: true
+    description: The cell's status in the previous release.
+
+  from_cause:
+    range: DarkCauseEnum
+    description: The cell's dark cause in the previous release, when it was dark.
+
+  to_status:
+    range: CellStatusEnum
+    required: true
+    description: The cell's status in the current release.
+
+  to_cause:
+    range: DarkCauseEnum
+    description: The cell's dark cause in the current release, when it is dark.
+
+  trigger:
+    range: TransitionTriggerEnum
+    required: true
+    description: What moved the cell, typed.
+
+  reference:
+    range: uriorcurie
+    description: >-
+      The citation or artifact behind the trigger (the new publication, the
+      source release, the correction notice).
+
+enums:
+
+  DeltaKindEnum:
+    description: >-
+      What changed between two releases. Never blended. Held two values until
+      a release corrected a source identifier without the world or the method
+      moving: identical definitions over an identical upstream snapshot, and
+      not one cell flipped. That is not the world moving, and world_moved was
+      acting as the residual bucket rather than as a claim about the world.
+    permissible_values:
+      world_moved:
+        description: >-
+          Identical populations and protocol; cells flipped because knowledge
+          changed. The conservation identity binds.
+      frame_moved:
+        description: >-
+          Populations, protocol, or dials changed; the question changed. Not
+          comparable to the predecessor as knowledge flow.
+      correction:
+        description: >-
+          Nothing moved. Identical populations, protocol and dials over an
+          identical upstream snapshot; the release exists to repair our own
+          record. Counts are expected to be unchanged, and any cell that does
+          flip flips because the previous release was wrong about it.
+
+  TransitionTriggerEnum:
+    description: The typed causes of a cell transition.
+    permissible_values:
+      source_release:
+        description: An upstream source shipped a new release.
+      new_publication:
+        description: A new primary publication answered or negated the cell.
+      method_change:
+        description: The protocol or pipeline changed how it resolves cells.
+      criteria_change:
+        description: A named dial changed (the bar moved, visibly).
+      population_change:
+        description: The population definition or its source version changed.
+      correction:
+        description: >-
+          The previous release was our error. The typed, public, cited repair
+          path; never a silent overwrite.
