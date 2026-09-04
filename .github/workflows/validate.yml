@@ -24,7 +24,7 @@ jobs:
           cache: pip
 
       - name: Install LinkML
-        run: pip install 'linkml>=1.9'
+        run: pip install -r requirements.txt
 
       - name: linkml-lint every schema
         run: |
