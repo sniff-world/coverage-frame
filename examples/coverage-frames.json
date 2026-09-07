@@ -4,9 +4,9 @@
     "schema": "https://sniff.world/schema/coverage-frame",
     "schema_provenance": "https://sniff.world/schema/coverage-frame-provenance",
     "generated": "2026-08-13",
-    "release_id": "sniff:release/2026-09-04",
+    "release_id": "sniff:release/2026-09-06",
     "cell_index": "sniff:artifact/coverage-cell-index",
-    "cell_index_sha256": "dd107378f6969b02a55103552f3674277b3d190024a5d22ee9d42055bacedeeb"
+    "cell_index_sha256": "4a1e3a021c07f3dbe91ec6011626cab84302440a90f275163ded5155dfe48bab"
   },
   "frames": [
     {
@@ -30,9 +30,9 @@
         "infores:ensembl-gene"
       ],
       "as_of": "2026-08-13",
-      "release_id": "sniff:release/2026-09-04",
-      "search_protocol": "sniff:protocol/human-disease-gene-canine-model@11",
-      "subject_population_ref": "sniff:population/bridge-touched-human-genes@2",
+      "release_id": "sniff:release/2026-09-06",
+      "search_protocol": "sniff:protocol/human-disease-gene-canine-model@12",
+      "subject_population_ref": "sniff:population/bridge-touched-human-genes@3",
       "object_population_ref": "sniff:population/canine-one2one-ortholog-space@2",
       "scope": {
         "measures": "This frame measures ClinVar 3-star review reach into canine models via dog orthology, not the canine literature.",
@@ -57,19 +57,19 @@
       "object_population": "Canine orthologs",
       "predicate": "biolink:model_of",
       "expected_cardinality": 16754,
-      "answered_count": 183,
-      "dark_count": 16571,
+      "answered_count": 195,
+      "dark_count": 16559,
       "dark_by_cause": {
-        "no_disease_anchor": 16571
+        "no_disease_anchor": 16559
       },
       "cell_source": "sniff:artifact/coverage-stack-index",
       "sources_checked": [
         "infores:omia"
       ],
       "as_of": "2026-08-27",
-      "release_id": "sniff:release/2026-09-04",
+      "release_id": "sniff:release/2026-09-06",
       "search_protocol": "sniff:protocol/human-disease-gene-canine-model-omia@1",
-      "subject_population_ref": "sniff:population/bridge-touched-human-genes@2",
+      "subject_population_ref": "sniff:population/bridge-touched-human-genes@3",
       "object_population_ref": "sniff:population/canine-one2one-ortholog-space@2",
       "scope": {
         "measures": "This frame measures OMIA's documented canine Mendelian disease-gene reach into the same human-disease-gene universe. It is not ClinVar, and it is not a combined census.",
@@ -93,8 +93,8 @@
       "object_population": "Canine orthologs",
       "predicate": "biolink:model_of",
       "expected_cardinality": 16754,
-      "answered_count": 292,
-      "dark_count": 16462,
+      "answered_count": 302,
+      "dark_count": 16452,
       "dark_by_cause": {},
       "cell_source": "sniff:artifact/coverage-stack-index",
       "sources_checked": [
@@ -103,9 +103,9 @@
         "infores:omia"
       ],
       "as_of": "2026-08-13",
-      "release_id": "sniff:release/2026-09-04",
+      "release_id": "sniff:release/2026-09-06",
       "search_protocol": "sniff:protocol/human-disease-gene-canine-model-intersection@1",
-      "subject_population_ref": "sniff:population/bridge-touched-human-genes@2",
+      "subject_population_ref": "sniff:population/bridge-touched-human-genes@3",
       "object_population_ref": "sniff:population/canine-one2one-ortholog-space@2",
       "constituents": [
         "sniff:frame/human-disease-gene-canine-model",
@@ -124,8 +124,8 @@
   ],
   "protocols": [
     {
-      "id": "sniff:protocol/human-disease-gene-canine-model@11",
-      "protocol_version": "11",
+      "id": "sniff:protocol/human-disease-gene-canine-model@12",
+      "protocol_version": "12",
       "pipeline": "https://github.com/sniff-world/coverage-frame/blob/main/pipeline/build-coverage-frames.mjs",
       "match_criteria": "A cell is answered when the human gene has a 3-star ClinVar P/LP anchor AND an assertable dog ortholog (Compara one2one, or the OrthoDB/OMA moderate ladder for reachability). Dark causes per the precedence funnel; below_bar is denominated by the named dial.",
       "completeness": "exhaustive",
@@ -316,10 +316,10 @@
   ],
   "populations": [
     {
-      "id": "sniff:population/bridge-touched-human-genes@2",
+      "id": "sniff:population/bridge-touched-human-genes@3",
       "source": "infores:clinvar",
       "source_version": "sniff:release/2026-08-13",
-      "selection": "Every human gene touched by the dog-to-human bridge: ClinVar P/LP disease-gene atoms (3-star anchors kept, below-expert-bar signal retained as below_bar) joined to the dog orthology ladder; the human-gene selection funnel total (the human-gene selection funnel total).",
+      "selection": "Every human gene touched by the dog-to-human bridge: ClinVar P/LP disease-gene atoms (3-star anchors kept, below-expert-bar signal retained as below_bar) joined to the dog orthology ladder; the count is the human-gene selection funnel total.",
       "count": 16754
     },
     {

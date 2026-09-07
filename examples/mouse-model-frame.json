@@ -102,7 +102,7 @@
           "expected_cause": "unreachable",
           "observed_cause": "unreachable",
           "observed_status": "dark",
-          "basis": "DAZ3: the DAZ cluster is a primate Y-linked transposition and amplification of autosomal DAZL (Saxena et al. 1996, PMID:8896558); the mouse genome carries Dazl and Boll and no DAZ, so no counterpart exists for the assay to observe",
+          "basis": "DAZ3: Saxena et al. 1996 (PMID:8896558) show the DAZ cluster arose on the primate Y by transposition and amplification of autosomal DAZL; the corollary, ours and not the paper's, is that the mouse genome carries Dazl and Boll and no DAZ, so no counterpart exists for the assay to observe",
           "basis_kind": "independent_literature",
           "receipt_source": "PMID:8896558",
           "outcome": "held"

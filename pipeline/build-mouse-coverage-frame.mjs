@@ -160,7 +160,7 @@ function build(snapshot) {
   // Darkness controls: the two cells this demo once mistyped, each now asserted to
   // its cause on evidence that is not this pipeline's own query.
   const DARKNESS = [
-    { symbol: 'DAZ3', expected_cause: 'unreachable', receipt_source: 'PMID:8896558', basis: 'DAZ3: the DAZ cluster is a primate Y-linked transposition and amplification of autosomal DAZL (Saxena et al. 1996, PMID:8896558); the mouse genome carries Dazl and Boll and no DAZ, so no counterpart exists for the assay to observe' },
+    { symbol: 'DAZ3', expected_cause: 'unreachable', receipt_source: 'PMID:8896558', basis: 'DAZ3: Saxena et al. 1996 (PMID:8896558) show the DAZ cluster arose on the primate Y by transposition and amplification of autosomal DAZL; the corollary, ours and not the paper\'s, is that the mouse genome carries Dazl and Boll and no DAZ, so no counterpart exists for the assay to observe' },
     { symbol: 'OR2J3', expected_cause: 'method_limited', receipt_source: 'PMID:11802173', basis: 'OR2J3: mouse olfactory receptors are a massively expanded family with many-to-many orthology to human (Zhang and Firestein 2002, PMID:11802173); a one-to-one assay cannot resolve the pair, and Alliance flags Or2j3 as reciprocal-best to OR2J2 and OR2J1, not OR2J3' },
   ];
   const darknessControls = DARKNESS.map(({ symbol, expected_cause, receipt_source, basis }) => {

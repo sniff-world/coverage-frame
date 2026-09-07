@@ -80,6 +80,31 @@ for (const rec of Object.values(xrefs.genes || {})) {
     });
   }
 }
+// THE SECOND HOME OF THE SAME FACT. The crossref table's omia_ids was empty for
+// at least nine genes (AP3B1, ATP7A, FUCA1, ITGB2, KIT, TPP1, TYRP1, ASIP, COMMD1) while the
+// OMIA disease table named a canine phene for each, so the lens rendered them dark under a
+// source that had lit them. Two representations of one fact, joined through the poorer one.
+// The lens now unions both; a gene the disease table names is answered, with that receipt.
+const omiaDim = JSON.parse(fs.readFileSync(path.join(WEB, 'src', 'data', 'omia-disease-dim.json'), 'utf8'));
+let omiaDimLit = 0;
+for (const [omiaId, row] of Object.entries(omiaDim)) {
+  if (omiaId === '_meta' || !row || !Array.isArray(row.genes)) continue;
+  if (!/-9615$/.test(omiaId)) continue; // canine rows only; a cat or horse phene may not light a dog cell
+  for (const g of row.genes) {
+    const hs = String(g).toUpperCase();
+    const keys = bySymbol.get(hs) || [];
+    for (const k of keys) {
+      if (!omiaAnswered.has(k)) omiaDimLit += 1;
+      omiaAnswered.add(k);
+      const prev = omiaReceipt.get(k) || { omia_ids: [], disease_names: [], symbol: hs };
+      const short = omiaId.replace(/^OMIA:/, '');
+      if (!prev.omia_ids.includes(short)) prev.omia_ids = [...prev.omia_ids, short];
+      if (row.disease && !prev.disease_names.includes(row.disease)) prev.disease_names = [...prev.disease_names, row.disease];
+      omiaReceipt.set(k, prev);
+    }
+  }
+}
+console.log(`coverage-composition: OMIA disease table lit ${omiaDimLit} cell(s) the crossref table had left dark`);
 
 const omiaCriteria = copy.omia_frame.criteria;
 const omiaDarkDef = copy.omia_frame.dark_definition;
@@ -332,6 +357,13 @@ function selftest() {
   t.push(['CEP290 OMIA is dark', cep && cep.by_frame[OMIA_ID].status === 'dark']);
   t.push(['CEP290 OMIA cause is no_disease_anchor', cep && cep.by_frame[OMIA_ID].cause === 'no_disease_anchor']);
   t.push(['CEP290 intersection is lit_any', cep && cep.intersection === 'lit_any']);
+  // The nine genes the OMIA disease table names and the crossref table did not.
+  // Each is on the axis and must be lit under the OMIA lens, or the union regressed.
+  for (const s of ['AP3B1', 'ATP7A', 'FUCA1', 'ITGB2', 'KIT', 'TPP1', 'TYRP1', 'ASIP', 'COMMD1']) {
+    const ks = bySymbol.get(s) || [];
+    t.push([`${s} is on the axis`, ks.length > 0]);
+    t.push([`${s} OMIA is lit from the disease table`, ks.length > 0 && ks.every((k) => omiaCells[k] && omiaCells[k].status === 'answered')]);
+  }
   t.push(['OMIA axis equals ClinVar axis size', Object.keys(omiaCells).length === axisKeys.length]);
   t.push(['intersection axis equals ClinVar axis size', Object.keys(stackCells).length === axisKeys.length]);
   // planted mismatch
