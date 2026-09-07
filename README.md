@@ -125,9 +125,9 @@ funnel is wrong, and nothing ships. Every date in these files is a UTC calendar
 date.
 
 
-## The frame moved (sniff:delta/2026-09-03..2026-09-04)
+## The frame moved (sniff:delta/2026-09-04..2026-09-06)
 
-Between the 2026-09-03 and 2026-09-04 releases,
+Between the 2026-09-04 and 2026-09-06 releases,
 a `frame_moved` delta recorded 0 typed transition(s).
 The protocol or the populations changed, so these transitions are annotations of a changed question and NOT knowledge flow. They are not comparable as coverage movement.
 See [`examples/coverage-frame-delta.json`](examples/coverage-frame-delta.json).
@@ -192,10 +192,10 @@ bytes of the emitter that produced the frames in `examples/`.
 
 | script | emits | sha256 (LF-normalized) |
 |---|---|---|
-| [`build-coverage-frames.mjs`](pipeline/build-coverage-frames.mjs) | the canine frame, its cells, and the cell index | `e8dede2f4c23ff50…` |
-| [`build-coverage-composition.mjs`](pipeline/build-coverage-composition.mjs) | the OMIA lens frame and the intersection frame | `a45c7fc0009de90a…` |
+| [`build-coverage-frames.mjs`](pipeline/build-coverage-frames.mjs) | the canine frame, its cells, and the cell index | `df264a29754f994c…` |
+| [`build-coverage-composition.mjs`](pipeline/build-coverage-composition.mjs) | the OMIA lens frame and the intersection frame | `911717f670924900…` |
 | [`build-coverage-frame-delta.mjs`](pipeline/build-coverage-frame-delta.mjs) | the typed delta between two releases | `900ed528699d9339…` |
-| [`build-mouse-coverage-frame.mjs`](pipeline/build-mouse-coverage-frame.mjs) | the mouse demo frame | `2eac3171d00bdbc9…` |
+| [`build-mouse-coverage-frame.mjs`](pipeline/build-mouse-coverage-frame.mjs) | the mouse demo frame | `ec45007632dc7cd8…` |
 
 The canine frame's protocol is **hash-locked**: the source substrate pins the
 sha256 of its builder per protocol version ([`pipeline/PINS.json`](pipeline/PINS.json)),

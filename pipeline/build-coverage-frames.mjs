@@ -44,13 +44,16 @@ import { fileURLToPath } from 'node:url';
 // even though it over-fires here: it hashes the whole emitter and cannot tell
 // provenance from procedure. Paying the price and writing down WHAT changed beats
 // moving the constant outside the hashed file to dodge the check.
-const PROTOCOL_VERSION = '11'; // 11: controls carry basis_kind and outcome; a same-source control routes to world_moved, never to a bare failure; release 2026-09-04
+const PROTOCOL_VERSION = '12'; // 12: population selection text corrected (a doubled clause); the OMIA lens now unions the OMIA disease table with the crossrefs (nine genes lit that OMIA had already named); release 2026-09-06
 const PIPELINE_URL = 'https://github.com/sniff-world/coverage-frame/blob/main/pipeline/build-coverage-frames.mjs';
 const PROTOCOL_ID = `sniff:protocol/human-disease-gene-canine-model@${PROTOCOL_VERSION}`;
 const CLINVAR_REVIEW_DIAL = 'sniff:dial/clinvar-review-floor@1'; // the 3-star expert-review bar behind below_bar
 // Population DEFINITION versions: bump only when the selection procedure text
 // changes (the gate pins the selection text per version in protocol-pins.json).
-const SUBJECT_POPULATION_ID = 'sniff:population/bridge-touched-human-genes@2';
+// @3 (2026-09-06): the selection TEXT changed (a doubled clause typed into the literal was
+// removed); the selection itself did not. The pin refuses a text change under a fixed @n,
+// and it is right to: a reader cites the text.
+const SUBJECT_POPULATION_ID = 'sniff:population/bridge-touched-human-genes@3';
 const OBJECT_POPULATION_ID = 'sniff:population/canine-one2one-ortholog-space@2';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -113,7 +116,7 @@ const asOf = readAt(frontier, '_meta.generated') || readAt(frontier, '_meta.as_o
 // and in as_of, never in the key.
 const dataSnapshotRelease =
   readAt(frontier, '_meta.release_id') || (asOf ? `sniff:release/${asOf}` : null);
-const releaseId = 'sniff:release/2026-09-04';
+const releaseId = 'sniff:release/2026-09-06';
 
 // --- v0.3 populations (counts DERIVED from the artifacts, never typed) -------
 const orthology = JSON.parse(fs.readFileSync(path.join(WEB, 'src', 'data', 'gene-orthology.json'), 'utf8'));
@@ -127,7 +130,7 @@ const subjectPopulation = {
   source: 'infores:clinvar',
   source_version: dataSnapshotRelease,
   selection:
-    'Every human gene touched by the dog-to-human bridge: ClinVar P/LP disease-gene atoms (3-star anchors kept, below-expert-bar signal retained as below_bar) joined to the dog orthology ladder; the human-gene selection funnel total (the human-gene selection funnel total).',
+    'Every human gene touched by the dog-to-human bridge: ClinVar P/LP disease-gene atoms (3-star anchors kept, below-expert-bar signal retained as below_bar) joined to the dog orthology ladder; the count is the human-gene selection funnel total.',
   count: total,
 };
 const objectPopulation = {

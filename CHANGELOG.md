@@ -19,6 +19,16 @@ First public release. Core 0.2.8, provenance 0.3.14, delta 0.3.4.
   and the frame ships while a held control still covers the cause; a control that
   fails with its facts intact is a funnel defect and nothing ships. Canine protocol
   10 to 11. All dates are UTC calendar dates.
+- The canine population definition's selection text carried a doubled clause; the
+  text is corrected and the definition is repinned, because a pin refuses a text
+  change under a fixed version. The OMIA lens in the composition builder now reads
+  both homes of the disease-gene fact: the crossref table and the OMIA disease
+  table. Genes the disease table names and the crossref table left dark are lit
+  with that receipt, and each of the nine found is a selftest in the builder. The
+  DAZ3 darkness-control receipt is reworded to claim only what the cited paper
+  shows and to mark the mouse-genome corollary as ours. Canine protocol 11 to 12.
+  The delta from release 2026-09-04 to 2026-09-06 is frame-moved with zero cell
+  transitions: the procedure's text changed and no cell did.
 
 - `infores:` now expands to `https://w3id.org/biolink/infores/`, matching Biolink,
   so registry CURIEs round-trip.
