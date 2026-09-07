@@ -82,8 +82,8 @@ writeFileSync(join(HERE, 'cause-controls.json'), LF(readFileSync(join(ROOT, 'web
 // records the sha256 of the bytes that produced the frame, and check-pipeline.py
 // in this repo recomputes the hash of the published copy. The scripts read the
 // source substrate and are not runnable standalone; the README says so. A copy
-// that carries the workshop's interior register (invariant numbers, ticket ids)
-// is refused here rather than published.
+// that references an internal identifier a reader cannot resolve is refused here
+// rather than published: a control is described, never cited by number.
 const PIPELINE_SCRIPTS = [
   'build-coverage-frames.mjs',
   'build-coverage-composition.mjs',
