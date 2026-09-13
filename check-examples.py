@@ -173,6 +173,80 @@ def darkness_failures(doc):
     return out
 
 
+def positive_control_failures(doc):
+    """A positive control that did not light must not ship.
+
+    The darkness controls above already carry an outcome rule. Positive controls
+    had none: a published frame could carry a control with expected_status
+    answered and observed_status dark, and every check stayed green. Found on
+    2026-09-09 by planting exactly that. A protocol that cannot find what is
+    independently known to exist has not earned its dark cells.
+    """
+    out = []
+    protocols = []
+    def collect(o):
+        if isinstance(o, dict):
+            if 'positive_controls' in o:
+                protocols.append(o)
+            for v in o.values():
+                collect(v)
+        elif isinstance(o, list):
+            for v in o:
+                collect(v)
+    collect(doc)
+    for proto in protocols:
+        pid = proto.get('id', '<protocol without id>')
+        for c in proto.get('positive_controls') or []:
+            expected = c.get('expected_status', 'answered')
+            observed = c.get('observed_status')
+            outcome = c.get('outcome')
+            if observed != expected:
+                out.append(f"{pid}: positive control {c.get('subject')} expected {expected}, observed {observed}")
+            if outcome is not None and outcome != 'held':
+                out.append(f"{pid}: positive control {c.get('subject')} outcome {outcome}; only a held positive control ships")
+    return out
+
+
+def inline_cell_failures(doc):
+    """When a document carries its cells, the frame's tallies must be the cells' tallies.
+
+    The canine frame keeps its cells in a separate index (cell_source) and its
+    tallies are reconciled upstream. The mouse demo carries its cells inline, and
+    nothing here compared them to the counts: a cell flipped from dark to answered
+    left answered_count, dark_count and dark_by_cause untouched and every check
+    green (planted 2026-09-09). Counts that do not describe the cells beside them
+    are a shrug with digits.
+    """
+    out = []
+    cells = doc.get('cells') if isinstance(doc, dict) else None
+    if not isinstance(cells, list) or not cells:
+        return out
+    frames = [f for f in frames_in(doc) if not f.get('constituents')]
+    if len(frames) != 1:
+        return out
+    f = frames[0]
+    fid = f.get('id', '<frame without id>')
+    answered = sum(1 for c in cells if isinstance(c, dict) and c.get('status') == 'answered')
+    dark = sum(1 for c in cells if isinstance(c, dict) and c.get('status') == 'dark')
+    if isinstance(f.get('answered_count'), int) and f['answered_count'] != answered:
+        out.append(f'{fid}: answered_count {f["answered_count"]} but {answered} inline cell(s) are answered')
+    if isinstance(f.get('dark_count'), int) and f['dark_count'] != dark:
+        out.append(f'{fid}: dark_count {f["dark_count"]} but {dark} inline cell(s) are dark')
+    tallies = f.get('dark_by_cause')
+    if isinstance(tallies, dict):
+        seen = {}
+        for c in cells:
+            if isinstance(c, dict) and c.get('status') == 'dark':
+                seen[c.get('dark_cause')] = seen.get(c.get('dark_cause'), 0) + 1
+        for cause, n in tallies.items():
+            if isinstance(n, int) and seen.get(cause, 0) != n:
+                out.append(f'{fid}: dark_by_cause says {cause} = {n}, inline cells carry {seen.get(cause, 0)}')
+        for cause, n in seen.items():
+            if cause not in tallies:
+                out.append(f'{fid}: {n} inline cell(s) carry cause {cause}, which dark_by_cause does not list')
+    return out
+
+
 def main():
     declared = declared_names()
     if not declared:
@@ -188,7 +262,7 @@ def main():
     for path in examples:
         with open(path, encoding='utf-8') as fh:
             doc = json.load(fh)
-        for msg in arithmetic_failures(doc) + darkness_failures(doc):
+        for msg in arithmetic_failures(doc) + darkness_failures(doc) + positive_control_failures(doc) + inline_cell_failures(doc):
             failures += 1
             print(f'  FAIL {path}: {msg}', file=sys.stderr)
         undeclared = sorted(k for k in keys_of(doc) if k not in declared and k not in ENVELOPE)
@@ -200,7 +274,7 @@ def main():
             print(f'  ok   {path}')
 
     if failures:
-        print(f'\ncheck-examples: {failures} undeclared key(s) across {len(examples)} example(s).',
+        print(f'\ncheck-examples: {failures} failure(s) across {len(examples)} example(s).',
               file=sys.stderr)
         print('An example carrying a key no schema declares is a promise the schema '
               'never made. Declare the slot, or fix the example.', file=sys.stderr)

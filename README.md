@@ -78,23 +78,28 @@ minimal skeleton to copy:
 The hardest field is `expected_cardinality`. It is the size of the question,
 not of the answer: every subject-object pair the two populations produce, before
 any search. If the number surprises you, the populations are wrong, not the
-count. One thing is not yet in this repository and is named here rather than
-implied: a second-organism frame at production scale (the mouse example is a
-sampled seed). It is an open item, not a feature.
+count. Two things are not yet in this repository and are named here rather than
+implied. A second-organism frame at production scale (the mouse example is a
+sampled seed). And the per-cell pointer on an answered cell: the schema declares
+`association` for it, and the published frames do not yet fill it. An answered
+canine cell today carries the criteria it met and the ortholog confidence; the
+record identifiers behind it (the ClinVar gene-condition record and the Ensembl
+homology) are held upstream and are not on the cell. Both are open items, not
+features.
 
 An **intersection frame** stacks several frames that share one subject axis. It
 names its `constituents` and carries no cause tallies of its own: causes stay
 on the constituent frames, and an empty `dark_by_cause` on an intersection is
 the rule, not a gap. `check-examples.py` enforces the arithmetic both ways.
 
-## The live frame (figures read from the 2026-08-13 release at generation time)
+## The live frame (release 2026-09-06, data as of 2026-08-13, read at generation time)
 
 One production frame asks: *Does a canine model foundation exist for this human disease gene under ClinVar 3-star review plus an assertable one-to-one ortholog?*
 
 | | |
 |---|---|
 | Expected cells | 16,754 |
-| Answered (cited assertion exists) | 124 |
+| Answered (an assertion exists under the protocol's criteria) | 124 |
 | Dark, by cause | 16,630 |
 
 Each dark cell carries one typed cause:

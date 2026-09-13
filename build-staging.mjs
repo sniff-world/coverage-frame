@@ -233,23 +233,28 @@ minimal skeleton to copy:
 The hardest field is \`expected_cardinality\`. It is the size of the question,
 not of the answer: every subject-object pair the two populations produce, before
 any search. If the number surprises you, the populations are wrong, not the
-count. One thing is not yet in this repository and is named here rather than
-implied: a second-organism frame at production scale (the mouse example is a
-sampled seed). It is an open item, not a feature.
+count. Two things are not yet in this repository and are named here rather than
+implied. A second-organism frame at production scale (the mouse example is a
+sampled seed). And the per-cell pointer on an answered cell: the schema declares
+\`association\` for it, and the published frames do not yet fill it. An answered
+canine cell today carries the criteria it met and the ortholog confidence; the
+record identifiers behind it (the ClinVar gene-condition record and the Ensembl
+homology) are held upstream and are not on the cell. Both are open items, not
+features.
 
 An **intersection frame** stacks several frames that share one subject axis. It
 names its \`constituents\` and carries no cause tallies of its own: causes stay
 on the constituent frames, and an empty \`dark_by_cause\` on an intersection is
 the rule, not a gap. \`check-examples.py\` enforces the arithmetic both ways.
 
-## The live frame (figures read from the ${frame.as_of} release at generation time)
+## The live frame (release ${framesDoc._meta.release_id.replace('sniff:release/', '')}, data as of ${frame.as_of}, read at generation time)
 
 One production frame asks: *${frame.question}*
 
 | | |
 |---|---|
 | Expected cells | ${frame.expected_cardinality.toLocaleString('en-US')} |
-| Answered (cited assertion exists) | ${frame.answered_count.toLocaleString('en-US')} |
+| Answered (an assertion exists under the protocol's criteria) | ${frame.answered_count.toLocaleString('en-US')} |
 | Dark, by cause | ${frame.dark_count.toLocaleString('en-US')} |
 
 Each dark cell carries one typed cause:
