@@ -39,6 +39,12 @@ First public release. Core 0.2.8, provenance 0.3.14, delta 0.3.4.
 - The delta module no longer redefines the core's `symbol` slot.
 - The generated README has one branch per delta kind; a `correction` delta was
   previously rendered under the frame-moved heading with an empty subject.
+- `check-examples.py` now also refuses a positive control that did not light (observed
+  status other than expected, or any outcome but held) and, for a document that carries
+  its cells, tallies that do not describe those cells. Both were found by planting the
+  defect and watching every check stay green. The README names the per-cell pointer on
+  an answered cell as an open item: the schema declares `association` and the published
+  frames do not yet fill it.
 - `check-examples.py` enforces the arithmetic: answered + dark = expected, cause
   tallies sum to dark_count, intersection frames carry no tallies, and `absent`
   is never paired with `dark`.
