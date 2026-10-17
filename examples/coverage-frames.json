@@ -3,10 +3,10 @@
     "doc": "Sniff CoverageFrames: reasoned absence as machine-readable frames. Generated, never hand-maintained. Conforms to schema/sniff-coverage-frame.yaml plus the provenance module, and is verified against them on every build.",
     "schema": "https://sniff.world/schema/coverage-frame",
     "schema_provenance": "https://sniff.world/schema/coverage-frame-provenance",
-    "generated": "2026-08-13",
-    "release_id": "sniff:release/2026-09-06",
+    "generated": "2026-09-18",
+    "release_id": "sniff:release/2026-09-30",
     "cell_index": "sniff:artifact/coverage-cell-index",
-    "cell_index_sha256": "4a1e3a021c07f3dbe91ec6011626cab84302440a90f275163ded5155dfe48bab"
+    "cell_index_sha256": "f7f625eeec884959e9a454b82dff42c73d0fe8f9bd86a9bc4ac13e4f73989c15"
   },
   "frames": [
     {
@@ -16,22 +16,22 @@
       "subject_population": "Human disease genes touched by the dog-to-human bridge",
       "object_population": "Canine orthologs",
       "predicate": "biolink:model_of",
-      "expected_cardinality": 16754,
-      "answered_count": 124,
-      "dark_count": 16630,
+      "expected_cardinality": 16755,
+      "answered_count": 123,
+      "dark_count": 16632,
       "dark_by_cause": {
-        "no_disease_anchor": 11161,
-        "below_bar": 5362,
-        "unreachable": 107
+        "no_disease_anchor": 11156,
+        "below_bar": 5368,
+        "unreachable": 108
       },
       "cell_source": "sniff:artifact/frontier-map",
       "sources_checked": [
         "infores:clinvar",
         "infores:ensembl-gene"
       ],
-      "as_of": "2026-08-13",
-      "release_id": "sniff:release/2026-09-06",
-      "search_protocol": "sniff:protocol/human-disease-gene-canine-model@12",
+      "as_of": "2026-09-18",
+      "release_id": "sniff:release/2026-09-30",
+      "search_protocol": "sniff:protocol/human-disease-gene-canine-model@14",
       "subject_population_ref": "sniff:population/bridge-touched-human-genes@3",
       "object_population_ref": "sniff:population/canine-one2one-ortholog-space@2",
       "scope": {
@@ -47,7 +47,13 @@
             "close_path": "Publish a parallel OMIA-scoped frame over the same subject axis (sniff:frame/human-disease-gene-canine-model/omia). Do not join OMIA into this frame's answered predicate. Narrowness is the measurement."
           }
         ]
-      }
+      },
+      "pointer_source": "sniff:artifact/kgx-federation-bundle#sha256:b51a728f29b95be75279ee1cd5aa04e9106e50af1369e88b6e87d79233d1bb7d",
+      "answered_with_pointer": 121,
+      "answered_without_pointer": 2,
+      "pointer_gap_causes": [
+        "bundle_lacks_gene"
+      ]
     },
     {
       "id": "sniff:frame/human-disease-gene-canine-model/omia",
@@ -56,18 +62,18 @@
       "subject_population": "Human disease genes touched by the dog-to-human bridge",
       "object_population": "Canine orthologs",
       "predicate": "biolink:model_of",
-      "expected_cardinality": 16754,
+      "expected_cardinality": 16755,
       "answered_count": 195,
-      "dark_count": 16559,
+      "dark_count": 16560,
       "dark_by_cause": {
-        "no_disease_anchor": 16559
+        "no_disease_anchor": 16560
       },
       "cell_source": "sniff:artifact/coverage-stack-index",
       "sources_checked": [
         "infores:omia"
       ],
       "as_of": "2026-08-27",
-      "release_id": "sniff:release/2026-09-06",
+      "release_id": "sniff:release/2026-09-30",
       "search_protocol": "sniff:protocol/human-disease-gene-canine-model-omia@1",
       "subject_population_ref": "sniff:population/bridge-touched-human-genes@3",
       "object_population_ref": "sniff:population/canine-one2one-ortholog-space@2",
@@ -92,9 +98,9 @@
       "subject_population": "Human disease genes touched by the dog-to-human bridge",
       "object_population": "Canine orthologs",
       "predicate": "biolink:model_of",
-      "expected_cardinality": 16754,
-      "answered_count": 302,
-      "dark_count": 16452,
+      "expected_cardinality": 16755,
+      "answered_count": 301,
+      "dark_count": 16454,
       "dark_by_cause": {},
       "cell_source": "sniff:artifact/coverage-stack-index",
       "sources_checked": [
@@ -102,8 +108,8 @@
         "infores:ensembl-gene",
         "infores:omia"
       ],
-      "as_of": "2026-08-13",
-      "release_id": "sniff:release/2026-09-06",
+      "as_of": "2026-09-18",
+      "release_id": "sniff:release/2026-09-30",
       "search_protocol": "sniff:protocol/human-disease-gene-canine-model-intersection@1",
       "subject_population_ref": "sniff:population/bridge-touched-human-genes@3",
       "object_population_ref": "sniff:population/canine-one2one-ortholog-space@2",
@@ -124,8 +130,8 @@
   ],
   "protocols": [
     {
-      "id": "sniff:protocol/human-disease-gene-canine-model@12",
-      "protocol_version": "12",
+      "id": "sniff:protocol/human-disease-gene-canine-model@14",
+      "protocol_version": "14",
       "pipeline": "https://github.com/sniff-world/coverage-frame/blob/main/pipeline/build-coverage-frames.mjs",
       "match_criteria": "A cell is answered when the human gene has a 3-star ClinVar P/LP anchor AND an assertable dog ortholog (Compara one2one, or the OrthoDB/OMA moderate ladder for reachability). Dark causes per the precedence funnel; below_bar is denominated by the named dial.",
       "completeness": "exhaustive",
@@ -203,7 +209,7 @@
           "receipt_as_of": "2026-09-04"
         }
       ],
-      "executed_at": "2026-08-13"
+      "executed_at": "2026-09-18"
     },
     {
       "id": "sniff:protocol/human-disease-gene-canine-model-omia@1",
@@ -311,16 +317,16 @@
           "outcome": "held"
         }
       ],
-      "executed_at": "2026-08-13"
+      "executed_at": "2026-09-18"
     }
   ],
   "populations": [
     {
       "id": "sniff:population/bridge-touched-human-genes@3",
       "source": "infores:clinvar",
-      "source_version": "sniff:release/2026-08-13",
+      "source_version": "sniff:release/2026-09-18",
       "selection": "Every human gene touched by the dog-to-human bridge: ClinVar P/LP disease-gene atoms (3-star anchors kept, below-expert-bar signal retained as below_bar) joined to the dog orthology ladder; the count is the human-gene selection funnel total.",
-      "count": 16754
+      "count": 16755
     },
     {
       "id": "sniff:population/canine-one2one-ortholog-space@2",

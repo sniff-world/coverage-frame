@@ -247,6 +247,31 @@ def inline_cell_failures(doc):
     return out
 
 
+def answered_pointer_failures(doc):
+    """An answered cell carries the assertion it rests on.
+
+    The schema declares `association` (the Biolink Association backing an
+    answered cell). For a year every published yes left it empty and passed,
+    because nothing asked. This asks, for every inline cell: answered means a
+    non-empty `association`, and `association` on a dark cell is a contradiction
+    (a dark cell has no assertion to point at).
+    """
+    out = []
+    cells = doc.get('cells') if isinstance(doc, dict) else None
+    if not isinstance(cells, list):
+        return out
+    for c in cells:
+        if not isinstance(c, dict):
+            continue
+        who = c.get('subject') or c.get('symbol') or '<cell>'
+        assoc = c.get('association')
+        if c.get('status') == 'answered' and not (isinstance(assoc, str) and assoc.strip()):
+            out.append(f'{who}: answered with no association; a yes needs a pointer')
+        if c.get('status') == 'dark' and assoc:
+            out.append(f'{who}: dark cell carries an association ({assoc}); a dark cell has nothing to point at')
+    return out
+
+
 def main():
     declared = declared_names()
     if not declared:
@@ -262,7 +287,8 @@ def main():
     for path in examples:
         with open(path, encoding='utf-8') as fh:
             doc = json.load(fh)
-        for msg in arithmetic_failures(doc) + darkness_failures(doc) + positive_control_failures(doc) + inline_cell_failures(doc):
+        for msg in (arithmetic_failures(doc) + darkness_failures(doc) + positive_control_failures(doc)
+                    + inline_cell_failures(doc) + answered_pointer_failures(doc)):
             failures += 1
             print(f'  FAIL {path}: {msg}', file=sys.stderr)
         undeclared = sorted(k for k in keys_of(doc) if k not in declared and k not in ENVELOPE)

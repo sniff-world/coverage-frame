@@ -366,6 +366,7 @@ function selftest() {
   }
   t.push(['OMIA axis equals ClinVar axis size', Object.keys(omiaCells).length === axisKeys.length]);
   t.push(['intersection axis equals ClinVar axis size', Object.keys(stackCells).length === axisKeys.length]);
+  t.push(['stack closure: lit_all + lit_any + dark_in_all_frames = n', litAll + (litAny - litAll) + darkAll === axisKeys.length]);
   // planted mismatch
   const planted = new Set(axisKeys);
   planted.add('ENSG_PLANTED_NOT_ON_AXIS');
@@ -401,7 +402,11 @@ const stackBody = JSON.stringify({
     generated: clinvar.as_of,
     release_id: clinvar.release_id,
     as_of_by_frame: { [CLINVAR_ID]: clinvar.as_of, [OMIA_ID]: omiaAsOf },
-    tallies: { lit_all: litAll, lit_any_only: litAny - litAll, dark_in_all_frames: darkAll, lit_any: litAny, unresolved: 0 },
+    // Stack closure: the tokens count as IntersectionStatusEnum defines them. lit_any is "answered in some
+    // constituents, not all", so it excludes lit_all; the union gets a name that says union. The
+    // old shape stored the union under lit_any and the token count under lit_any_only, and the page
+    // printed 285 beside the word lit_any while 124 + 195 - 17 = 302.
+    tallies: { lit_all: litAll, lit_any: litAny - litAll, dark_in_all_frames: darkAll, lit_in_at_least_one: litAny, unresolved: 0 },
     stack_frames: [CLINVAR_ID, OMIA_ID],
     stack_note: 'Statuses are under these two frames only. Cells are not evaluated against sources outside this stack.',
   },
@@ -411,7 +416,7 @@ fs.writeFileSync(path.join(PUB, 'coverage-stack-index.json'), stackBody);
 
 console.log(
   `coverage-composition: OMIA answered ${omiaAnsweredN} / ${axisKeys.length} dark ${omiaDark}; ` +
-  `intersection lit_any ${litAny} (lit_all ${litAll}) dark_in_all_frames ${darkAll}`,
+  `intersection lit in at least one ${litAny} (lit_all ${litAll} + lit_any ${litAny - litAll}) dark_in_all_frames ${darkAll}`,
 );
 console.log('  SOD1: ClinVar dark, OMIA answered, intersection lit_any');
 console.log('  wrote coverage-frames.json (3 frames) + coverage-stack-index.json');

@@ -2,15 +2,165 @@
   "_meta": {
     "doc": "Sniff FrameDelta: typed change between coverage-frame releases. Generated, never hand-maintained. Conforms to schema/sniff-coverage-frame-delta.yaml, and is verified against it on every build.",
     "schema": "https://sniff.world/schema/coverage-frame-delta",
-    "generated": "2026-09-06"
+    "generated": "2026-10-01"
   },
   "delta": {
-    "id": "sniff:delta/2026-09-04..2026-09-06",
-    "previous_frame": "sniff:frame/human-disease-gene-canine-model@sniff:release/2026-09-04",
-    "current_frame": "sniff:frame/human-disease-gene-canine-model@sniff:release/2026-09-06",
-    "kind": "frame_moved",
-    "transitions": [],
-    "entered": [],
+    "id": "sniff:delta/2026-09-24..2026-09-30",
+    "previous_frame": "sniff:frame/human-disease-gene-canine-model@sniff:release/2026-09-24",
+    "current_frame": "sniff:frame/human-disease-gene-canine-model@sniff:release/2026-09-30",
+    "kind": "world_moved",
+    "transitions": [
+      {
+        "subject": "ENSEMBL:ENSG00000172995",
+        "symbol": "ARPP21",
+        "from_status": "dark",
+        "from_cause": "no_disease_anchor",
+        "to_status": "dark",
+        "to_cause": "below_bar",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000105483",
+        "symbol": "CARD8",
+        "from_status": "dark",
+        "from_cause": "below_bar",
+        "to_status": "dark",
+        "to_cause": "no_disease_anchor",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000156345",
+        "symbol": "CDK20",
+        "from_status": "dark",
+        "from_cause": "no_disease_anchor",
+        "to_status": "dark",
+        "to_cause": "below_bar",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000126787",
+        "symbol": "DLGAP5",
+        "from_status": "dark",
+        "from_cause": "no_disease_anchor",
+        "to_status": "dark",
+        "to_cause": "below_bar",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000142700",
+        "symbol": "DMRTA2",
+        "from_status": "dark",
+        "from_cause": "no_disease_anchor",
+        "to_status": "dark",
+        "to_cause": "below_bar",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000143196",
+        "symbol": "DPT",
+        "from_status": "dark",
+        "from_cause": "below_bar",
+        "to_status": "dark",
+        "to_cause": "no_disease_anchor",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000135414",
+        "symbol": "GDF11",
+        "from_status": "dark",
+        "from_cause": "below_bar",
+        "to_status": "dark",
+        "to_cause": "no_disease_anchor",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000204120",
+        "symbol": "GIGYF2",
+        "from_status": "dark",
+        "from_cause": "no_disease_anchor",
+        "to_status": "dark",
+        "to_cause": "below_bar",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000263001",
+        "symbol": "GTF2I",
+        "from_status": "dark",
+        "from_cause": "no_disease_anchor",
+        "to_status": "dark",
+        "to_cause": "below_bar",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000134070",
+        "symbol": "IRAK2",
+        "from_status": "dark",
+        "from_cause": "no_disease_anchor",
+        "to_status": "dark",
+        "to_cause": "below_bar",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000149489",
+        "symbol": "ROM1",
+        "from_status": "dark",
+        "from_cause": "no_disease_anchor",
+        "to_status": "dark",
+        "to_cause": "below_bar",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000162426",
+        "symbol": "SLC45A1",
+        "from_status": "dark",
+        "from_cause": "below_bar",
+        "to_status": "dark",
+        "to_cause": "no_disease_anchor",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000100722",
+        "symbol": "ZC3H14",
+        "from_status": "dark",
+        "from_cause": "no_disease_anchor",
+        "to_status": "dark",
+        "to_cause": "below_bar",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      },
+      {
+        "subject": "ENSEMBL:ENSG00000145217",
+        "symbol": "SLC26A1",
+        "from_status": "answered",
+        "from_cause": null,
+        "to_status": "dark",
+        "to_cause": "below_bar",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      }
+    ],
+    "entered": [
+      {
+        "subject": "ENSEMBL:ENSG00000266826",
+        "symbol": "IGBP1C",
+        "status": "dark",
+        "dark_cause": "unreachable",
+        "trigger": "source_release",
+        "reference": "sniff:release/2026-09-30"
+      }
+    ],
     "left": []
   }
 }

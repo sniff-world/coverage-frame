@@ -233,14 +233,15 @@ minimal skeleton to copy:
 The hardest field is \`expected_cardinality\`. It is the size of the question,
 not of the answer: every subject-object pair the two populations produce, before
 any search. If the number surprises you, the populations are wrong, not the
-count. Two things are not yet in this repository and are named here rather than
-implied. A second-organism frame at production scale (the mouse example is a
-sampled seed). And the per-cell pointer on an answered cell: the schema declares
-\`association\` for it, and the published frames do not yet fill it. An answered
-canine cell today carries the criteria it met and the ortholog confidence; the
-record identifiers behind it (the ClinVar gene-condition record and the Ensembl
-homology) are held upstream and are not on the cell. Both are open items, not
-features.
+count. One thing is not yet in this repository and is named here rather than
+implied: a second-organism frame at production scale (the mouse example is a
+sampled seed). The per-cell pointer on an answered cell is filled since
+release 2026-09-24: every answered canine cell carries \`association\`, the
+three-star ClinVar gene-to-condition edge as the published federation bundle
+names it, every anchor at or above the floor, and the orthology edge to the dog
+gene. A cell the bundle cannot back yet carries a typed gap instead of a pointer,
+and the frame states how many of each it holds. The mouse example's answered
+cells point at the Alliance gene read that lit them, with the date it was read.
 
 An **intersection frame** stacks several frames that share one subject axis. It
 names its \`constituents\` and carries no cause tallies of its own: causes stay
