@@ -1,7 +1,7 @@
 id: https://sniff.world/schema/coverage-frame
 name: sniff_coverage_frame
 title: "Sniff CoverageFrame: reasoned absence over a bounded question space"
-version: 0.2.8
+version: 0.2.9
 license: https://creativecommons.org/publicdomain/zero/1.0/
 
 description: >-
@@ -304,6 +304,18 @@ enums:
       `no_disease_anchor` have no term in Biolink or any evidence ontology checked.
       Where no mapping appears below, that absence is verified and load-bearing,
       not an oversight.
+
+      A cause names why the world is dark, never why a reader is. It is earned by
+      opening a source: absent and unstudied say what the opened sources hold,
+      method_limited says our reader fails on a source that holds it, and
+      unreachable says no entity exists for the assay to observe. A cell that no
+      lane has searched, a fetch that failed, or a source a license closes to us
+      says nothing about the world and carries no cause at all. A producer that
+      records such a cell states how far its search got and who holds the data
+      instead of naming a cause, and it never uses unreachable for a source it
+      simply has not opened. Any schema that imports this enum carries this
+      paragraph with it, so the values cannot keep their names while drifting in
+      meaning.
     see_also:
       - https://github.com/biolink/biolink-model/issues/247
       - https://www.hl7.org/fhir/R4/valueset-data-absent-reason.html

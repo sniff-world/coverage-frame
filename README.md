@@ -21,8 +21,8 @@ three schema files carry their own versions in the table below.
 
 | file | version | contents |
 |---|---|---|
-| [`schema/sniff-coverage-frame.yaml`](schema/sniff-coverage-frame.yaml) | 0.2.8 | Core: `CoverageFrame`, `FrameCell`, `CellStatusEnum`, `DarkCauseEnum`. One class pair, two enums. |
-| [`schema/sniff-coverage-frame-provenance.yaml`](schema/sniff-coverage-frame-provenance.yaml) | 0.3.14 | `SearchProtocol`, `PopulationDefinition`, positive controls. The procedure behind the no. |
+| [`schema/sniff-coverage-frame.yaml`](schema/sniff-coverage-frame.yaml) | 0.2.9 | Core: `CoverageFrame`, `FrameCell`, `CellStatusEnum`, `DarkCauseEnum`. One class pair, two enums. |
+| [`schema/sniff-coverage-frame-provenance.yaml`](schema/sniff-coverage-frame-provenance.yaml) | 0.3.15 | `SearchProtocol`, `PopulationDefinition`, positive controls. The procedure behind the no. |
 | [`schema/sniff-coverage-frame-delta.yaml`](schema/sniff-coverage-frame-delta.yaml) | 0.3.4 | `FrameDelta`, `CellTransition`. Darkness is perishable; change is typed. |
 
 The core is deliberately small and sits beside Biolink rather than forking it.
@@ -78,37 +78,38 @@ minimal skeleton to copy:
 The hardest field is `expected_cardinality`. It is the size of the question,
 not of the answer: every subject-object pair the two populations produce, before
 any search. If the number surprises you, the populations are wrong, not the
-count. Two things are not yet in this repository and are named here rather than
-implied. A second-organism frame at production scale (the mouse example is a
-sampled seed). And the per-cell pointer on an answered cell: the schema declares
-`association` for it, and the published frames do not yet fill it. An answered
-canine cell today carries the criteria it met and the ortholog confidence; the
-record identifiers behind it (the ClinVar gene-condition record and the Ensembl
-homology) are held upstream and are not on the cell. Both are open items, not
-features.
+count. One thing is not yet in this repository and is named here rather than
+implied: a second-organism frame at production scale (the mouse example is a
+sampled seed). The per-cell pointer on an answered cell is filled since
+release 2026-09-24: every answered canine cell carries `association`, the
+three-star ClinVar gene-to-condition edge as the published federation bundle
+names it, every anchor at or above the floor, and the orthology edge to the dog
+gene. A cell the bundle cannot back yet carries a typed gap instead of a pointer,
+and the frame states how many of each it holds. The mouse example's answered
+cells point at the Alliance gene read that lit them, with the date it was read.
 
 An **intersection frame** stacks several frames that share one subject axis. It
 names its `constituents` and carries no cause tallies of its own: causes stay
 on the constituent frames, and an empty `dark_by_cause` on an intersection is
 the rule, not a gap. `check-examples.py` enforces the arithmetic both ways.
 
-## The live frame (release 2026-09-06, data as of 2026-08-13, read at generation time)
+## The live frame (release 2026-09-30, data as of 2026-09-18, read at generation time)
 
 One production frame asks: *Does a canine model foundation exist for this human disease gene under ClinVar 3-star review plus an assertable one-to-one ortholog?*
 
 | | |
 |---|---|
-| Expected cells | 16,754 |
-| Answered (an assertion exists under the protocol's criteria) | 124 |
-| Dark, by cause | 16,630 |
+| Expected cells | 16,755 |
+| Answered (an assertion exists under the protocol's criteria) | 123 |
+| Dark, by cause | 16,632 |
 
 Each dark cell carries one typed cause:
 
 | cause | cells |
 |---|---|
-| `no_disease_anchor` | 11,161 |
-| `below_bar` | 5,362 |
-| `unreachable` | 107 |
+| `no_disease_anchor` | 11,156 |
+| `below_bar` | 5,368 |
+| `unreachable` | 108 |
 
 Causes are assigned by a declared precedence funnel (unreachable → method_limited → no_disease_anchor → unstudied → below_bar → absent),
 and the frame is published only when its positive controls (TP53, F8, VWF) are
@@ -130,11 +131,11 @@ funnel is wrong, and nothing ships. Every date in these files is a UTC calendar
 date.
 
 
-## The frame moved (sniff:delta/2026-09-04..2026-09-06)
+## The world moved (sniff:delta/2026-09-24..2026-09-30)
 
-Between the 2026-09-04 and 2026-09-06 releases,
-a `frame_moved` delta recorded 0 typed transition(s).
-The protocol or the populations changed, so these transitions are annotations of a changed question and NOT knowledge flow. They are not comparable as coverage movement.
+Between the 2026-09-24 and 2026-09-30 releases,
+a `world_moved` delta recorded 14 typed transition(s).
+Identical protocol and population definitions on both sides, so these are knowledge flows: the world answered questions it had not answered before.
 See [`examples/coverage-frame-delta.json`](examples/coverage-frame-delta.json).
 
 ## Generality
@@ -197,10 +198,10 @@ bytes of the emitter that produced the frames in `examples/`.
 
 | script | emits | sha256 (LF-normalized) |
 |---|---|---|
-| [`build-coverage-frames.mjs`](pipeline/build-coverage-frames.mjs) | the canine frame, its cells, and the cell index | `df264a29754f994c…` |
-| [`build-coverage-composition.mjs`](pipeline/build-coverage-composition.mjs) | the OMIA lens frame and the intersection frame | `911717f670924900…` |
+| [`build-coverage-frames.mjs`](pipeline/build-coverage-frames.mjs) | the canine frame, its cells, and the cell index | `fdbb76ef5fce55ec…` |
+| [`build-coverage-composition.mjs`](pipeline/build-coverage-composition.mjs) | the OMIA lens frame and the intersection frame | `b703ec35dbc861e9…` |
 | [`build-coverage-frame-delta.mjs`](pipeline/build-coverage-frame-delta.mjs) | the typed delta between two releases | `900ed528699d9339…` |
-| [`build-mouse-coverage-frame.mjs`](pipeline/build-mouse-coverage-frame.mjs) | the mouse demo frame | `ec45007632dc7cd8…` |
+| [`build-mouse-coverage-frame.mjs`](pipeline/build-mouse-coverage-frame.mjs) | the mouse demo frame | `dd89a07f0249d2d9…` |
 
 The canine frame's protocol is **hash-locked**: the source substrate pins the
 sha256 of its builder per protocol version ([`pipeline/PINS.json`](pipeline/PINS.json)),

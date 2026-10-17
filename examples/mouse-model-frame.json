@@ -126,49 +126,63 @@
       "symbol": "TP53",
       "object": "MGI:98834",
       "status": "answered",
-      "dark_cause": null
+      "dark_cause": null,
+      "association": "https://www.alliancegenome.org/api/gene/MGI:98834",
+      "as_of": "2026-09-04"
     },
     {
       "subject": "HGNC:11179",
       "symbol": "SOD1",
       "object": "MGI:98351",
       "status": "answered",
-      "dark_cause": null
+      "dark_cause": null,
+      "association": "https://www.alliancegenome.org/api/gene/MGI:98351",
+      "as_of": "2026-09-04"
     },
     {
       "subject": "HGNC:3546",
       "symbol": "F8",
       "object": "MGI:88383",
       "status": "answered",
-      "dark_cause": null
+      "dark_cause": null,
+      "association": "https://www.alliancegenome.org/api/gene/MGI:88383",
+      "as_of": "2026-09-04"
     },
     {
       "subject": "HGNC:12726",
       "symbol": "VWF",
       "object": "MGI:98941",
       "status": "answered",
-      "dark_cause": null
+      "dark_cause": null,
+      "association": "https://www.alliancegenome.org/api/gene/MGI:98941",
+      "as_of": "2026-09-04"
     },
     {
       "subject": "HGNC:3551",
       "symbol": "F9",
       "object": "MGI:88384",
       "status": "answered",
-      "dark_cause": null
+      "dark_cause": null,
+      "association": "https://www.alliancegenome.org/api/gene/MGI:88384",
+      "as_of": "2026-09-04"
     },
     {
       "subject": "HGNC:29021",
       "symbol": "CEP290",
       "object": "MGI:2384917",
       "status": "answered",
-      "dark_cause": null
+      "dark_cause": null,
+      "association": "https://www.alliancegenome.org/api/gene/MGI:2384917",
+      "as_of": "2026-09-04"
     },
     {
       "subject": "HGNC:8979",
       "symbol": "PIK3R1",
       "object": "MGI:97583",
       "status": "answered",
-      "dark_cause": null
+      "dark_cause": null,
+      "association": "https://www.alliancegenome.org/api/gene/MGI:97583",
+      "as_of": "2026-09-04"
     },
     {
       "subject": "HGNC:15965",

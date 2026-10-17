@@ -1,7 +1,7 @@
 id: https://sniff.world/schema/coverage-frame-provenance
 name: sniff_coverage_frame_provenance
 title: Sniff CoverageFrame provenance module (an absence claim carries its search)
-version: 0.3.14
+version: 0.3.15
 license: https://creativecommons.org/publicdomain/zero/1.0/
 
 description: >-
@@ -167,6 +167,10 @@ classes:
       - conforms_to
       - scope
       - constituents
+      - pointer_source
+      - answered_with_pointer
+      - answered_without_pointer
+      - pointer_gap_causes
 
   FrameScope:
     description: >-
@@ -383,6 +387,38 @@ slots:
       The release this frame snapshot belongs to. Declared in 0.3.3; the
       shipped artifact had carried it undeclared, which the reference
       validation loop now makes impossible to repeat silently.
+
+  pointer_source:
+    range: uriorcurie
+    description: >-
+      The published artifact every answered cell's association is drawn from,
+      with its content hash. Declared in 0.3.15, when the frames first filled the
+      association slot the core schema had declared since 0.1: a yes needs a
+      pointer, and the pointer needs a source a reader can open.
+
+  answered_with_pointer:
+    range: integer
+    minimum_value: 0
+    description: >-
+      How many answered cells carry an association and an orthology edge. With
+      answered_without_pointer it sums to answered_count; the cells are recounted
+      at build and the frame's figure is refused when it is not the recount.
+
+  answered_without_pointer:
+    range: integer
+    minimum_value: 0
+    description: >-
+      How many answered cells carry a typed gap instead of a pointer, because
+      the published source cannot back them yet. Zero is the goal; a nonzero
+      count is stated here rather than hidden in the cells.
+
+  pointer_gap_causes:
+    range: string
+    multivalued: true
+    description: >-
+      The distinct typed causes carried by the cells counted in
+      answered_without_pointer, so a reader of the frame alone knows what kind
+      of gap remains.
 
   conforms_to:
     range: uriorcurie

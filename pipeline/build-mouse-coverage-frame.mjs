@@ -137,7 +137,14 @@ function build(snapshot) {
       cells.push({ subject: g.hgnc, symbol: g.human_symbol, object: g.mouse ? g.mouse.id : null, status: 'dark', dark_cause: cause });
     } else {
       answered += 1;
-      cells.push({ subject: g.hgnc, symbol: g.human_symbol, object: g.mouse.id, status: 'answered', dark_cause: null });
+      // The pointer behind the yes: the Alliance gene read whose disease-annotation
+      // flag lit this cell, with the date it was read. A yes with no pointer passed
+      // every check for a year because nothing asked; check-examples.py asks now.
+      cells.push({
+        subject: g.hgnc, symbol: g.human_symbol, object: g.mouse.id, status: 'answered', dark_cause: null,
+        association: `https://www.alliancegenome.org/api/gene/${g.mouse.id}`,
+        as_of: snapshot.as_of,
+      });
     }
   }
   const PROTOCOL_ID = 'sniff:protocol/human-disease-gene-mouse-model@demo-2';

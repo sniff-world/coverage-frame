@@ -44,7 +44,22 @@ import { fileURLToPath } from 'node:url';
 // even though it over-fires here: it hashes the whole emitter and cannot tell
 // provenance from procedure. Paying the price and writing down WHAT changed beats
 // moving the constant outside the hashed file to dodge the check.
-const PROTOCOL_VERSION = '12'; // 12: population selection text corrected (a doubled clause); the OMIA lens now unions the OMIA disease table with the crossrefs (nine genes lit that OMIA had already named); release 2026-09-06
+// 13 (2026-09-24): every answered cell carries the pointer the schema declared and
+// the frames never filled: `association`, the three-star ClinVar gene-to-condition
+// edge as the published federation bundle names it, plus the orthology edge to the
+// dog gene. Both are read from src/data/answered-cell-pointers.json, which is
+// extracted from the bundle and carries its export hash; the gate refuses a
+// pointer file whose bundle is not the one the site publishes. THE SEARCH
+// PROCEDURE DID NOT CHANGE: same queries, same filters, same funnel, same
+// controls; no cell moved. An answered cell the bundle cannot back gets a typed
+// gap, never a minted pointer.
+// 14 (2026-09-30): ClinVar re-pulled to the 2026-09-14 release; the pull had been
+// 2026-08-10. THE SEARCH PROCEDURE DID NOT CHANGE: same match criteria, same funnel
+// order, same named dial, same population definitions, same controls. Only the world
+// moved, so the delta from release 2026-09-24 is world_moved and the cells that moved
+// are knowledge flow, not a retyped question. Renumbered from 13 at merge: 13 was
+// taken by the answered-cell pointer work, which landed first.
+const PROTOCOL_VERSION = '14';
 const PIPELINE_URL = 'https://github.com/sniff-world/coverage-frame/blob/main/pipeline/build-coverage-frames.mjs';
 const PROTOCOL_ID = `sniff:protocol/human-disease-gene-canine-model@${PROTOCOL_VERSION}`;
 const CLINVAR_REVIEW_DIAL = 'sniff:dial/clinvar-review-floor@1'; // the 3-star expert-review bar behind below_bar
@@ -116,7 +131,35 @@ const asOf = readAt(frontier, '_meta.generated') || readAt(frontier, '_meta.as_o
 // and in as_of, never in the key.
 const dataSnapshotRelease =
   readAt(frontier, '_meta.release_id') || (asOf ? `sniff:release/${asOf}` : null);
-const releaseId = 'sniff:release/2026-09-06';
+const releaseId = 'sniff:release/2026-09-30';
+
+// --- the pointer behind every yes (protocol 13) --------------------------------
+// Read from the file build-answered-cell-pointers.mjs extracts out of the published
+// federation bundle. The bundle hash it carries must be the one the in-repo
+// manifest receipt records, or the gate refuses: a pointer file from some other
+// bundle would point at edges the site does not publish.
+const POINTERS = JSON.parse(fs.readFileSync(path.join(SRC_DATA, 'answered-cell-pointers.json'), 'utf8'));
+const KGX_MANIFEST = JSON.parse(fs.readFileSync(path.join(SRC_DATA, 'kgx-manifest.json'), 'utf8'));
+if (!POINTERS._meta || !POINTERS._meta.bundle || POINTERS._meta.bundle.export_sha256 !== KGX_MANIFEST.export_sha256) {
+  throw new Error(
+    `coverage-frames: answered-cell-pointers.json was extracted from bundle ${String(POINTERS._meta && POINTERS._meta.bundle && POINTERS._meta.bundle.export_sha256).slice(0, 12)}, ` +
+    `but kgx-manifest.json records ${String(KGX_MANIFEST.export_sha256).slice(0, 12)}; re-run build-answered-cell-pointers.mjs against the published bundle`,
+  );
+}
+const POINTER_SOURCE = `sniff:artifact/kgx-federation-bundle#sha256:${KGX_MANIFEST.export_sha256}`;
+// The two ways a yes can lack its pointer, each named so the gap has a direction.
+const GAP_REASON = {
+  bundle_lacks_gene: 'the published federation bundle carries no ClinVar edge for this gene; the frame read a later ClinVar release than the bundle was built from',
+  bundle_anchor_below_floor: 'the published federation bundle carries ClinVar edges for this gene only below the three-star floor this frame requires',
+  bundle_lacks_ortholog: 'the published federation bundle carries no orthology edge to a dog gene for this human gene',
+};
+function pointerFor(ensg) {
+  const g = ensg ? POINTERS.genes[ensg] : null;
+  if (!g) return { gap: 'bundle_lacks_gene' };
+  if (!g.association) return { gap: 'bundle_anchor_below_floor' };
+  if (!g.ortholog) return { gap: 'bundle_lacks_ortholog' };
+  return { association: g.association, anchors: g.anchors, ortholog: g.ortholog };
+}
 
 // --- v0.3 populations (counts DERIVED from the artifacts, never typed) -------
 const orthology = JSON.parse(fs.readFileSync(path.join(WEB, 'src', 'data', 'gene-orthology.json'), 'utf8'));
@@ -206,6 +249,7 @@ if (unreach && Array.isArray(unreach.records)) {
     const k = cellKey(r);
     if (!k || cells[k]) continue;
     if (r.bridgeable === true) {
+      const ptr = pointerFor(r.ensembl_gene_id);
       cells[k] = {
         status: 'answered',
         cause: null,
@@ -213,6 +257,9 @@ if (unreach && Array.isArray(unreach.records)) {
         symbol: String(r.entity || '').toUpperCase() || null,
         ensembl_gene_id: r.ensembl_gene_id || null,
         ortholog_confidence: r.ortholog_confidence || null,
+        association: ptr.association || null,
+        ...(ptr.anchors ? { anchors: ptr.anchors, ortholog: ptr.ortholog } : {}),
+        ...(ptr.gap ? { association_gap: { cause: ptr.gap, reason: GAP_REASON[ptr.gap] } } : {}),
       };
     } else if (r.bridgeable === false) {
       cells[k] = {
@@ -223,6 +270,20 @@ if (unreach && Array.isArray(unreach.records)) {
         ensembl_gene_id: r.ensembl_gene_id || null,
       };
     }
+  }
+}
+
+// The pointer tallies ride on the frame beside answered_count, so a reader of the
+// frame alone knows how many of its yeses can be opened and how many cannot yet.
+{
+  const answeredCells = Object.values(cells).filter((c) => c.status === 'answered');
+  const gaps = answeredCells.filter((c) => c.association_gap);
+  frame.pointer_source = POINTER_SOURCE;
+  frame.answered_with_pointer = answeredCells.length - gaps.length;
+  frame.answered_without_pointer = gaps.length;
+  frame.pointer_gap_causes = [...new Set(gaps.map((c) => c.association_gap.cause))].sort();
+  if (frame.answered_with_pointer + frame.answered_without_pointer !== answered) {
+    throw new Error(`coverage-frames: pointer tallies (${frame.answered_with_pointer} + ${frame.answered_without_pointer}) do not sum to answered_count ${answered}`);
   }
 }
 
